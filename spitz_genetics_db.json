@@ -1,0 +1,98 @@
+{
+  "projeto": "Spitz Genetic Predictor - Full Database",
+  "loci": {
+    "Locus_A": {
+      "nome": "Agouti",
+      "alelos": [
+        {"simbolo": "Ay", "nome": "Sable", "dominancia": 1},
+        {"simbolo": "Aw", "nome": "Wolf Sable", "dominancia": 2},
+        {"simbolo": "at", "nome": "Tan Points", "dominancia": 3},
+        {"simbolo": "a", "nome": "Preto Recessivo", "dominancia": 4}
+      ]
+    },
+    "Locus_K": {
+      "nome": "Dominant Black",
+      "alelos": [
+        {"simbolo": "K", "nome": "Preto Sólido", "dominancia": 1},
+        {"simbolo": "Kbr", "nome": "Tigrado", "dominancia": 2},
+        {"simbolo": "k", "nome": "Não-Preto (Agouti)", "dominancia": 3}
+      ]
+    },
+    "Locus_E": {
+      "nome": "Extension",
+      "alelos": [
+        {"simbolo": "Em", "nome": "Máscara Negra", "dominancia": 1},
+        {"simbolo": "E", "nome": "Extensão Normal", "dominancia": 2},
+        {"simbolo": "e", "nome": "Recessivo Vermelho (Epistático)", "dominancia": 3}
+      ]
+    },
+    "Locus_B": {
+      "nome": "Brown",
+      "alelos": [
+        {"simbolo": "B", "nome": "Preto", "dominancia": 1},
+        {"simbolo": "b", "nome": "Chocolate", "dominancia": 2}
+      ]
+    },
+    "Locus_D": {
+      "nome": "Dilution",
+      "alelos": [
+        {"simbolo": "D", "nome": "Cor Densa", "dominancia": 1},
+        {"simbolo": "d", "nome": "Diluído (Azul/Lilac)", "dominancia": 2}
+      ]
+    },
+    "Locus_I": {
+      "nome": "Intensidade",
+      "tipo": "Dominância Incompleta",
+      "alelos": [
+        {"simbolo": "I", "nome": "Intenso", "dominancia": 1},
+        {"simbolo": "i", "nome": "Diluído (Creme/Branco)", "dominancia": 2}
+      ]
+    },
+    "Locus_M": {
+      "nome": "Merle",
+      "alelos": [
+        {"simbolo": "Mh", "nome": "Harlequin Merle", "dominancia": 1},
+        {"simbolo": "M", "nome": "Merle Padrão", "dominancia": 2},
+        {"simbolo": "Ma", "nome": "Merle Atípico", "dominancia": 3},
+        {"simbolo": "Mc", "nome": "Merle Cripto", "dominancia": 4},
+        {"simbolo": "m", "nome": "Não-Merle", "dominancia": 5}
+      ]
+    },
+    "Locus_S": {
+      "nome": "Spotting",
+      "alelos": [
+        {"simbolo": "S", "nome": "Sólido", "dominancia": 1},
+        {"simbolo": "si", "nome": "Irlandês", "dominancia": 2},
+        {"simbolo": "sp", "nome": "Piebald (Parti)", "dominancia": 3},
+        {"simbolo": "sw", "nome": "Branco Extremo", "dominancia": 4}
+      ]
+    },
+    "Locus_T": {
+      "nome": "Ticking",
+      "alelos": [
+        {"simbolo": "T", "nome": "Com sardas/pintas", "dominancia": 1},
+        {"simbolo": "t", "nome": "Sem pintas", "dominancia": 2}
+      ]
+    }
+  },
+  "alertas_saude": [
+    {
+      "combinacao": "M + M",
+      "risco": "Double Merle",
+      "consequencia": "Cegueira, Surdez, Microftalmia.",
+      "severidade": "Alta"
+    },
+    {
+      "combinacao": "d + d",
+      "risco": "Alopecia por Diluição da Cor",
+      "consequencia": "Queda de pelo crônica e displasia folicular.",
+      "severidade": "Média"
+    }
+  ],
+  "regras_fenotipo": {
+    "Branco_Verdadeiro": "Locus_E == 'ee' AND Locus_I == 'ii'",
+    "Lilac": "Locus_B == 'bb' AND Locus_D == 'dd'",
+    "Beaver": "Laranja/Sable AND Locus_B == 'bb'",
+    "Merle_Oculto": "Locus_E == 'ee' AND Locus_M tem 'M' (Cão é Merle mas parece Creme)"
+  }
+}

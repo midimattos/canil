@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6C5CE7">
+    <meta name="description" content="Ferramenta de previsão de ninhadas para Spitz Alemão Anão">
+    <title>Spitz Genetic Predictor</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%236C5CE7' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-weight='bold'>🐕</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%236C5CE7' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-weight='bold'>🐕</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="title">🐕 Spitz Genetic Predictor</h1>
+            <p class="subtitle">Ferramenta de previsão de ninhadas para Spitz Alemão Anão</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="dogs">Dados dos Cães</button>
+            <button class="tab-btn" data-tab="simulation">Simulação</button>
+            <button class="tab-btn" data-tab="results">Resultados</button>
+            <button class="tab-btn" data-tab="reference">Referência</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Tab 1: Dogs Data Input -->
+            <section id="dogs" class="tab-content active">
+                <div class="two-column">
+                    <!-- Father Dog -->
+                    <div class="dog-card">
+                        <h2>🔵 Cão Pai</h2>
+                        <form id="fatherForm" class="dog-form">
+                            <div class="form-group">
+                                <label for="fatherName">Nome:</label>
+                                <input type="text" id="fatherName" placeholder="Ex: Rex">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fatherCoat">Pelagem:</label>
+                                <select id="fatherCoat" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="curta">Curta (Padrão)</option>
+                                    <option value="longa">Longa / Abundante</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fatherBaseColor">Coloração Base:</label>
+                                <select id="fatherBaseColor" required onchange="updateMaskVisibility('father'); updateIntensityLabel('father')">
+                                    <option value="">Selecione...</option>
+                                    <option value="preto">Preto</option>
+                                    <option value="chocolate">Chocolate</option>
+                                    <option value="laranja">Laranja / Vermelho</option>
+                                    <option value="creme">Creme</option>
+                                    <option value="branco">Branco</option>
+                                    <option value="wolf_sable">Wolf Sable (Agouti)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fatherDilution">Diluição:</label>
+                                <select id="fatherDilution" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="densa">Densa (Não diluído)</option>
+                                    <option value="diluida">Diluída (Azul / Lilac)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fatherMarking">Marcação:</label>
+                                <select id="fatherMarking" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="solido">Sólido</option>
+                                    <option value="sable">Sable</option>
+                                    <option value="tan_points">Tan Points</option>
+                                    <option value="particolor">Particolor (Piebald)</option>
+                                    <option value="irlandesa">Mancha Irlandesa</option>
+                                    <option value="branco_extremo">Branco Extremo</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="fatherMaskGroup" style="display: none;">
+                                <label for="fatherMask">Máscara:</label>
+                                <select id="fatherMask">
+                                    <option value="">Selecione...</option>
+                                    <option value="sem_mascara">Sem Máscara</option>
+                                    <option value="mascara_negra">Com Máscara Negra</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="fatherIntensityGroup">
+                                <label for="fatherIntensity">Intensidade:</label>
+                                <select id="fatherIntensity" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="vermelho_intenso">Vermelho Intenso</option>
+                                    <option value="laranja_padrao">Laranja Padrão</option>
+                                    <option value="creme_branco">Creme / Branco</option>
+                                </select>
+                                <div class="field-hint" id="fatherIntensityHint" style="display: none;">
+                                    ℹ️ A intensidade está oculta pela cor base, mas informe a cor dos pais ou ancestrais para maior precisão nos portadores.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fatherMerle">Marmoreio:</label>
+                                <select id="fatherMerle" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="nao">Sem Merle (Sólido)</option>
+                                    <option value="merle">Merle Padrão</option>
+                                    <option value="harlequin">Harlequin Merle</option>
+                                    <option value="oculto">Merle Oculto / Cripto</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fatherNose">Trufagem:</label>
+                                <select id="fatherNose" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="preta">Preta</option>
+                                    <option value="marrom">Marrom</option>
+                                    <option value="azul">Azul (Cinza)</option>
+                                    <option value="lilas_beaver">Lilás / Beaver</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fatherTicking">Pigmentação:</label>
+                                <select id="fatherTicking" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="sem_pintas">Sem Pintas</option>
+                                    <option value="com_pintas">Com Pintas / Sardas</option>
+                                </select>
+                            </div>
+
+                            <button type="button" class="btn-reset" onclick="resetForm('fatherForm')">Limpar</button>
+                        </form>
+                    </div>
+
+                    <!-- Mother Dog -->
+                    <div class="dog-card">
+                        <h2>🔴 Cão Mãe</h2>
+                        <form id="motherForm" class="dog-form">
+                            <div class="form-group">
+                                <label for="motherName">Nome:</label>
+                                <input type="text" id="motherName" placeholder="Ex: Luna">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="motherCoat">Pelagem:</label>
+                                <select id="motherCoat" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="curta">Curta (Padrão)</option>
+                                    <option value="longa">Longa / Abundante</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="motherBaseColor">Coloração Base:</label>
+                                <select id="motherBaseColor" required onchange="updateMaskVisibility('mother'); updateIntensityLabel('mother')">
+                                    <option value="">Selecione...</option>
+                                    <option value="preto">Preto</option>
+                                    <option value="chocolate">Chocolate</option>
+                                    <option value="laranja">Laranja / Vermelho</option>
+                                    <option value="creme">Creme</option>
+                                    <option value="branco">Branco</option>
+                                    <option value="wolf_sable">Wolf Sable (Agouti)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="motherDilution">Diluição:</label>
+                                <select id="motherDilution" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="densa">Densa (Não diluído)</option>
+                                    <option value="diluida">Diluída (Azul / Lilac)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="motherMarking">Marcação:</label>
+                                <select id="motherMarking" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="solido">Sólido</option>
+                                    <option value="sable">Sable</option>
+                                    <option value="tan_points">Tan Points</option>
+                                    <option value="particolor">Particolor (Piebald)</option>
+                                    <option value="irlandesa">Mancha Irlandesa</option>
+                                    <option value="branco_extremo">Branco Extremo</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="motherMaskGroup" style="display: none;">
+                                <label for="motherMask">Máscara:</label>
+                                <select id="motherMask">
+                                    <option value="">Selecione...</option>
+                                    <option value="sem_mascara">Sem Máscara</option>
+                                    <option value="mascara_negra">Com Máscara Negra</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="motherIntensityGroup">
+                                <label for="motherIntensity">Intensidade:</label>
+                                <select id="motherIntensity" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="vermelho_intenso">Vermelho Intenso</option>
+                                    <option value="laranja_padrao">Laranja Padrão</option>
+                                    <option value="creme_branco">Creme / Branco</option>
+                                </select>
+                                <div class="field-hint" id="motherIntensityHint" style="display: none;">
+                                    ℹ️ A intensidade está oculta pela cor base, mas informe a cor dos pais ou ancestrais para maior precisão nos portadores.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="motherMerle">Marmoreio:</label>
+                                <select id="motherMerle" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="nao">Sem Merle (Sólido)</option>
+                                    <option value="merle">Merle Padrão</option>
+                                    <option value="harlequin">Harlequin Merle</option>
+                                    <option value="oculto">Merle Oculto / Cripto</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="motherNose">Trufagem:</label>
+                                <select id="motherNose" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="preta">Preta</option>
+                                    <option value="marrom">Marrom</option>
+                                    <option value="azul">Azul (Cinza)</option>
+                                    <option value="lilas_beaver">Lilás / Beaver</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="motherTicking">Pigmentação:</label>
+                                <select id="motherTicking" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="sem_pintas">Sem Pintas</option>
+                                    <option value="com_pintas">Com Pintas / Sardas</option>
+                                </select>
+                            </div>
+
+                            <button type="button" class="btn-reset" onclick="resetForm('motherForm')">Limpar</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 2: Simulation -->
+            <section id="simulation" class="tab-content">
+                <div class="simulation-container">
+                    <h2>⚙️ Configuração da Simulação</h2>
+                    
+                    <div class="form-group">
+                        <label for="litterSize">Tamanho da Ninhada (número de filhotes para simular):</label>
+                        <input type="number" id="litterSize" min="1" max="100" value="20">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="showGenotype" checked>
+                            Mostrar Genótipo (Alelos)
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="showHealthAlerts" checked>
+                            Mostrar Alertas de Saúde
+                        </label>
+                    </div>
+
+                    <div class="info-box">
+                        <h3>⚠️ Informações Importantes</h3>
+                        <ul>
+                            <li>Este simulador usa modelos genéticos conhecidos para a raça Spitz Alemão Anão</li>
+                            <li>Resultados são estimativas baseadas em herança mendeliana</li>
+                            <li>Alguns genes têm interações complexas não totalmente capturadas aqui</li>
+                            <li>Consulte um geneticista canino para cruzamentos críticos</li>
+                            <li><strong>Alertas de saúde críticos:</strong> Double Merle (MM) causa cegueira e surdez</li>
+                        </ul>
+                    </div>
+
+                    <button id="simulateBtn" class="btn-primary">▶ Simular Cruzamento</button>
+                </div>
+            </section>
+
+            <!-- Tab 3: Results -->
+            <section id="results" class="tab-content">
+                <div id="resultsContainer" class="results-container">
+                    <p class="placeholder">Resultados aparecerão aqui após a simulação</p>
+                </div>
+            </section>
+
+            <!-- Tab 4: Reference -->
+            <section id="reference" class="tab-content">
+                <div class="reference-container">
+                    <h2>📚 Guia de Referência Genética</h2>
+                    
+                    <div class="reference-section">
+                        <h3>Locus A - Agouti (Coloração)</h3>
+                        <ul>
+                            <li><strong>Ay:</strong> Sable (Dominante)</li>
+                            <li><strong>Aw:</strong> Wolf Sable</li>
+                            <li><strong>at:</strong> Tan Points</li>
+                            <li><strong>a:</strong> Preto Recessivo (Mais Recessivo)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-section">
+                        <h3>Locus K - Dominant Black (Padrão)</h3>
+                        <ul>
+                            <li><strong>K:</strong> Preto Sólido (Dominante)</li>
+                            <li><strong>Kbr:</strong> Tigrado</li>
+                            <li><strong>k:</strong> Agouti (Recessivo)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-section">
+                        <h3>Locus E - Extension (Máscara)</h3>
+                        <ul>
+                            <li><strong>Em:</strong> Máscara Negra (Dominante)</li>
+                            <li><strong>E:</strong> Extensão Normal</li>
+                            <li><strong>e:</strong> Recessivo Vermelho (Epistático)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-section">
+                        <h3>Locus B - Brown (Cor)</h3>
+                        <ul>
+                            <li><strong>B:</strong> Preto (Dominante)</li>
+                            <li><strong>b:</strong> Chocolate (Recessivo)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-section">
+                        <h3>Locus D - Dilution (Diluição)</h3>
+                        <ul>
+                            <li><strong>D:</strong> Cor Densa (Dominante)</li>
+                            <li><strong>d:</strong> Diluído - Azul/Lilac (Recessivo)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-section">
+                        <h3>Locus I - Intensity (Intensidade)</h3>
+                        <ul>
+                            <li><strong>II:</strong> Vermelho Intenso (Dominância Incompleta)</li>
+                            <li><strong>Ii:</strong> Laranja Padrão (Intermediário)</li>
+                            <li><strong>ii:</strong> Creme / Branco (Recessivo)</li>
+                        </ul>
+                        <p style="margin-top: 1rem; padding: 1rem; background: rgba(108, 92, 231, 0.1); border-radius: 6px; font-size: 0.9rem;">
+                            <strong>Nota Importante:</strong> Um cão preto que é filho de um creme carrega o gene <strong>i</strong>. Se cruzado com uma fêmea laranja, pode produzir filhotes cremes. Use o campo de Intensidade para registrar esses portadores.
+                        </p>
+                    </div>
+
+                    <div class="reference-section">
+                        <h3>Locus M - Merle (Marmoreio)</h3>
+                        <ul>
+                            <li><strong>M:</strong> Merle Padrão</li>
+                            <li><strong>Mh:</strong> Harlequin Merle</li>
+                            <li><strong>Mc:</strong> Merle Cripto/Oculto</li>
+                            <li><strong>m:</strong> Não-Merle</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-section">
+                        <h3>Locus S - Spotting (Marcação)</h3>
+                        <ul>
+                            <li><strong>S:</strong> Sólido (Dominante)</li>
+                            <li><strong>si:</strong> Irlandês</li>
+                            <li><strong>sp:</strong> Piebald/Parti</li>
+                            <li><strong>sw:</strong> Branco Extremo (Recessivo)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-section">
+                        <h3>Locus T - Ticking (Pintas)</h3>
+                        <ul>
+                            <li><strong>T:</strong> Com Sardas/Pintas (Dominante)</li>
+                            <li><strong>t:</strong> Sem Pintas (Recessivo)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-section alert-box">
+                        <h3>⚠️ Alertas de Saúde Genética</h3>
+                        <p><strong>Double Merle (M/M ou Mh/Mh ou similar):</strong> Cegueira, sordez, microftalmia</p>
+                        <p><strong>Alopecia por Diluição (d/d):</strong> Queda de pelo crônica</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Spitz Genetic Predictor v1.0 | Ferramenta educacional para criadores</p>
+            <p id="offlineStatus"></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
