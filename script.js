@@ -267,7 +267,6 @@ function inferGenotype(characteristics) {
   }
 
   // ========== INTENSIDADE (Locus I - Dominância Incompleta) ==========
-  // IMPORTANTE: Mesmo em cores escuras (Preto/Chocolate), aceitar genes i para portadores
   switch (characteristics.intensity) {
     case 'vermelho_intenso':
       genotype.I = ['I', 'I'];
@@ -278,9 +277,6 @@ function inferGenotype(characteristics) {
       break;
 
     case 'creme_branco':
-      // Um cão preto/chocolate pode ser ii (portador de creme)
-      // Exemplo: Preto ii x Laranja II = Filhotes Laranja II/i (padrão)
-      // Exemplo: Preto ii x Laranja Ii = Filhotes 50% Laranja, 50% Creme
       genotype.I = ['i', 'i'];
       break;
   }
@@ -466,8 +462,6 @@ function genotypeToPhenotype(genotype) {
 
   // ========== INTENSIDADE (Dominância Incompleta) ==========
   if (isEpistatic || (K[0] === 'K' || K[1] === 'K')) {
-    // Em cores pretas/chocolate, a intensidade pode ser oculta visualmente
-    // mas é importante registrar para portadores
     if (I[0] === 'I' && I[1] === 'I') {
       phenotype.intensity = 'N/A - Portador: Vermelho Intenso (II)';
     } else if ((I[0] === 'I' && I[1] === 'i') || (I[0] === 'i' && I[1] === 'I')) {
@@ -476,7 +470,6 @@ function genotypeToPhenotype(genotype) {
       phenotype.intensity = 'N/A - Portador: Creme/Branco (ii)';
     }
   } else {
-    // Apenas em agouti/laranja
     if (I[0] === 'I' && I[1] === 'I') {
       phenotype.intensity = 'Vermelho Intenso (II)';
     } else if ((I[0] === 'I' && I[1] === 'i') || (I[0] === 'i' && I[1] === 'I')) {
@@ -727,10 +720,18 @@ function validateForms() {
   return true;
 }
 
-// Simulate button
+// Simulate button - CORRIGIDO PARA LIMPAR CACHE
 document.getElementById('simulateBtn')?.addEventListener('click', () => {
   if (!validateForms()) return;
 
+  // LIMPAR STATE ANTERIOR ANTES DE GERAR NOVOS DADOS
+  state = {
+    father: null,
+    mother: null,
+    simulationResults: []
+  };
+
+  // LER OS DADOS DOS FORMULÁRIOS (sempre fresco do DOM)
   state.father = readDogForm('fatherForm');
   state.mother = readDogForm('motherForm');
 
@@ -745,8 +746,10 @@ document.getElementById('simulateBtn')?.addEventListener('click', () => {
     alerts: checkHealthAlerts(pup.genotype)
   }));
 
+  // Atualizar state com novos resultados
   state.simulationResults = puppiesWithInfo;
 
+  // Exibir resultados
   displayResults(
     puppiesWithInfo,
     state.father.name,
@@ -754,6 +757,7 @@ document.getElementById('simulateBtn')?.addEventListener('click', () => {
     litterSize
   );
 
+  // Navegar para a aba de resultados
   document.querySelector('[data-tab="results"]').click();
 });
 

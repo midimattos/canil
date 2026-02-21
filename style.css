@@ -618,3 +618,31 @@ html, body {
   color: var(--text-color);
   line-height: 1.4;
 }
+/* Simulation Settings */
+.simulation-settings {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    max-width: 600px;
+    margin: 2rem auto 0;
+    border-top: 4px solid var(--primary-color);
+}
+
+.simulation-settings h3 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+/* Field Hint */
+.field-hint {
+    background: rgba(243, 156, 18, 0.1);
+    border-left: 3px solid var(--warning-color);
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    line-height: 1.4;
+}
