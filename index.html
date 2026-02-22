@@ -21,28 +21,44 @@
 
         <!-- Navigation Tabs -->
         <nav class="tabs">
-            <button class="tab-btn active" data-tab="dogs">Dados dos Cães</button>
+            <button class="tab-btn active" data-tab="kennel">Meu Canil</button>
+            <button class="tab-btn" data-tab="dogs">Simular Cruzamento</button>
             <button class="tab-btn" data-tab="results">Resultados</button>
             <button class="tab-btn" data-tab="reference">Referência</button>
         </nav>
 
         <!-- Main Content -->
         <main class="content">
-            <!-- Tab 1: Dogs Data Input -->
-            <section id="dogs" class="tab-content active">
-                <div class="two-column">
-                    <!-- Father Dog -->
-                    <div class="dog-card">
-                        <h2>🔵 Cão Pai</h2>
-                        <form id="fatherForm" class="dog-form">
+            <!-- Tab 0: Kennel Management -->
+            <section id="kennel" class="tab-content active">
+                <div class="kennel-container">
+                    <h2>🏠 Meu Canil</h2>
+                    
+                    <div class="kennel-actions">
+                        <button class="btn-primary" onclick="toggleRegisterDog()">➕ Registrar Novo Cão</button>
+                    </div>
+
+                    <!-- Register Dog Form -->
+                    <div id="registerDogForm" class="register-form" style="display: none;">
+                        <h3>Registrar Novo Cão</h3>
+                        <form id="newDogForm">
                             <div class="form-group">
-                                <label for="fatherName">Nome:</label>
-                                <input type="text" id="fatherName" placeholder="Ex: Rex">
+                                <label for="dogName">Nome do Cão:</label>
+                                <input type="text" id="dogName" required placeholder="Ex: Rex">
                             </div>
 
                             <div class="form-group">
-                                <label for="fatherCoat">Pelagem:</label>
-                                <select id="fatherCoat" required>
+                                <label for="dogSex">Sexo:</label>
+                                <select id="dogSex" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="M">Macho ♂</option>
+                                    <option value="F">Fêmea ♀</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dogCoat">Pelagem:</label>
+                                <select id="dogCoat" required>
                                     <option value="">Selecione...</option>
                                     <option value="curta">Curta (Padrão)</option>
                                     <option value="longa">Longa / Abundante</option>
@@ -50,8 +66,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="fatherBaseColor">Coloração Base:</label>
-                                <select id="fatherBaseColor" required onchange="updateMaskVisibility('father'); updateIntensityLabel('father')">
+                                <label for="dogBaseColor">Coloração Base:</label>
+                                <select id="dogBaseColor" required onchange="updateDogMaskVisibility(); updateDogIntensityLabel()">
                                     <option value="">Selecione...</option>
                                     <option value="preto">Preto</option>
                                     <option value="chocolate">Chocolate</option>
@@ -63,8 +79,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="fatherDilution">Diluição:</label>
-                                <select id="fatherDilution" required>
+                                <label for="dogDilution">Diluição:</label>
+                                <select id="dogDilution" required>
                                     <option value="">Selecione...</option>
                                     <option value="densa">Densa (Não diluído)</option>
                                     <option value="diluida">Diluída (Azul / Lilac)</option>
@@ -72,8 +88,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="fatherMarking">Marcação:</label>
-                                <select id="fatherMarking" required>
+                                <label for="dogMarking">Marcação:</label>
+                                <select id="dogMarking" required>
                                     <option value="">Selecione...</option>
                                     <option value="solido">Sólido</option>
                                     <option value="sable">Sable</option>
@@ -84,31 +100,31 @@
                                 </select>
                             </div>
 
-                            <div class="form-group" id="fatherMaskGroup" style="display: none;">
-                                <label for="fatherMask">Máscara:</label>
-                                <select id="fatherMask">
+                            <div class="form-group" id="dogMaskGroup" style="display: none;">
+                                <label for="dogMask">Máscara:</label>
+                                <select id="dogMask">
                                     <option value="">Selecione...</option>
                                     <option value="sem_mascara">Sem Máscara</option>
                                     <option value="mascara_negra">Com Máscara Negra</option>
                                 </select>
                             </div>
 
-                            <div class="form-group" id="fatherIntensityGroup">
-                                <label for="fatherIntensity">Intensidade:</label>
-                                <select id="fatherIntensity" required>
+                            <div class="form-group" id="dogIntensityGroup">
+                                <label for="dogIntensity">Intensidade:</label>
+                                <select id="dogIntensity" required>
                                     <option value="">Selecione...</option>
                                     <option value="vermelho_intenso">Vermelho Intenso</option>
                                     <option value="laranja_padrao">Laranja Padrão</option>
                                     <option value="creme_branco">Creme / Branco</option>
                                 </select>
-                                <div class="field-hint" id="fatherIntensityHint" style="display: none;">
+                                <div class="field-hint" id="dogIntensityHint" style="display: none;">
                                     ℹ️ A intensidade está oculta pela cor base, mas informe a cor dos pais ou ancestrais para maior precisão nos portadores.
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="fatherMerle">Marmoreio:</label>
-                                <select id="fatherMerle" required>
+                                <label for="dogMerle">Marmoreio:</label>
+                                <select id="dogMerle" required>
                                     <option value="">Selecione...</option>
                                     <option value="nao">Sem Merle (Sólido)</option>
                                     <option value="merle">Merle Padrão</option>
@@ -118,8 +134,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="fatherNose">Trufagem:</label>
-                                <select id="fatherNose" required>
+                                <label for="dogNose">Trufagem:</label>
+                                <select id="dogNose" required>
                                     <option value="">Selecione...</option>
                                     <option value="preta">Preta</option>
                                     <option value="marrom">Marrom</option>
@@ -129,164 +145,114 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="fatherTicking">Pigmentação:</label>
-                                <select id="fatherTicking" required>
+                                <label for="dogTicking">Pigmentação:</label>
+                                <select id="dogTicking" required>
                                     <option value="">Selecione...</option>
                                     <option value="sem_pintas">Sem Pintas</option>
                                     <option value="com_pintas">Com Pintas / Sardas</option>
                                 </select>
                             </div>
 
-                            <button type="button" class="btn-reset" onclick="resetForm('fatherForm')">Limpar</button>
+                            <hr style="margin: 1.5rem 0; border: none; border-top: 2px solid var(--border-color);">
+
+                            <h4 style="margin-bottom: 1rem; color: var(--primary-color);">👨‍👩‍👧 Árvore Genealógica (Opcional)</h4>
+
+                            <div class="form-group">
+                                <label for="dogFather">Pai do Cão:</label>
+                                <select id="dogFather">
+                                    <option value="">Selecione um cão registrado...</option>
+                                </select>
+                                <small style="color: var(--text-light); margin-top: 0.3rem; display: block;">Apenas machos registrados aparecerão aqui</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dogMother">Mãe do Cão:</label>
+                                <select id="dogMother">
+                                    <option value="">Selecione uma cão registrada...</option>
+                                </select>
+                                <small style="color: var(--text-light); margin-top: 0.3rem; display: block;">Apenas fêmeas registradas aparecerão aqui</small>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">✓ Registrar Cão</button>
+                                <button type="button" class="btn-reset" onclick="toggleRegisterDog()">✕ Cancelar</button>
+                            </div>
                         </form>
                     </div>
 
-                    <!-- Mother Dog -->
-                    <div class="dog-card">
-                        <h2>🔴 Cão Mãe</h2>
-                        <form id="motherForm" class="dog-form">
-                            <div class="form-group">
-                                <label for="motherName">Nome:</label>
-                                <input type="text" id="motherName" placeholder="Ex: Luna">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="motherCoat">Pelagem:</label>
-                                <select id="motherCoat" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="curta">Curta (Padrão)</option>
-                                    <option value="longa">Longa / Abundante</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="motherBaseColor">Coloração Base:</label>
-                                <select id="motherBaseColor" required onchange="updateMaskVisibility('mother'); updateIntensityLabel('mother')">
-                                    <option value="">Selecione...</option>
-                                    <option value="preto">Preto</option>
-                                    <option value="chocolate">Chocolate</option>
-                                    <option value="laranja">Laranja / Vermelho</option>
-                                    <option value="creme">Creme</option>
-                                    <option value="branco">Branco</option>
-                                    <option value="wolf_sable">Wolf Sable (Agouti)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="motherDilution">Diluição:</label>
-                                <select id="motherDilution" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="densa">Densa (Não diluído)</option>
-                                    <option value="diluida">Diluída (Azul / Lilac)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="motherMarking">Marcação:</label>
-                                <select id="motherMarking" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="solido">Sólido</option>
-                                    <option value="sable">Sable</option>
-                                    <option value="tan_points">Tan Points</option>
-                                    <option value="particolor">Particolor (Piebald)</option>
-                                    <option value="irlandesa">Mancha Irlandesa</option>
-                                    <option value="branco_extremo">Branco Extremo</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group" id="motherMaskGroup" style="display: none;">
-                                <label for="motherMask">Máscara:</label>
-                                <select id="motherMask">
-                                    <option value="">Selecione...</option>
-                                    <option value="sem_mascara">Sem Máscara</option>
-                                    <option value="mascara_negra">Com Máscara Negra</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group" id="motherIntensityGroup">
-                                <label for="motherIntensity">Intensidade:</label>
-                                <select id="motherIntensity" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="vermelho_intenso">Vermelho Intenso</option>
-                                    <option value="laranja_padrao">Laranja Padrão</option>
-                                    <option value="creme_branco">Creme / Branco</option>
-                                </select>
-                                <div class="field-hint" id="motherIntensityHint" style="display: none;">
-                                    ℹ️ A intensidade está oculta pela cor base, mas informe a cor dos pais ou ancestrais para maior precisão nos portadores.
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="motherMerle">Marmoreio:</label>
-                                <select id="motherMerle" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="nao">Sem Merle (Sólido)</option>
-                                    <option value="merle">Merle Padrão</option>
-                                    <option value="harlequin">Harlequin Merle</option>
-                                    <option value="oculto">Merle Oculto / Cripto</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="motherNose">Trufagem:</label>
-                                <select id="motherNose" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="preta">Preta</option>
-                                    <option value="marrom">Marrom</option>
-                                    <option value="azul">Azul (Cinza)</option>
-                                    <option value="lilas_beaver">Lilás / Beaver</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="motherTicking">Pigmentação:</label>
-                                <select id="motherTicking" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="sem_pintas">Sem Pintas</option>
-                                    <option value="com_pintas">Com Pintas / Sardas</option>
-                                </select>
-                            </div>
-
-                            <button type="button" class="btn-reset" onclick="resetForm('motherForm')">Limpar</button>
-                        </form>
+                    <!-- Kennel Dogs List -->
+                    <div id="kennelList" class="kennel-list">
+                        <p class="placeholder">Nenhum cão registrado ainda. Clique em "Registrar Novo Cão" para começar!</p>
                     </div>
                 </div>
+            </section>
 
-                <!-- Simulation Settings at the bottom of Dogs tab -->
-                <div class="simulation-settings">
-                    <h3>⚙️ Configuração da Simulação</h3>
+            <!-- Tab 1: Dogs Simulation -->
+            <section id="dogs" class="tab-content">
+                <div class="simulation-setup">
+                    <h2>🧬 Simular Cruzamento</h2>
                     
-                    <div class="form-group">
-                        <label for="litterSize">Tamanho da Ninhada (número de filhotes para simular):</label>
-                        <input type="number" id="litterSize" min="1" max="100" value="20">
+                    <div class="two-column">
+                        <!-- Father Selection -->
+                        <div class="dog-card">
+                            <h3>🔵 Selecionar Cão Pai</h3>
+                            <div class="form-group">
+                                <label for="selectedFather">Escolha um macho:</label>
+                                <select id="selectedFather" required onchange="updateFatherInfo()">
+                                    <option value="">Selecione um macho...</option>
+                                </select>
+                            </div>
+                            <div id="fatherInfo" class="dog-info" style="display: none;"></div>
+                        </div>
+
+                        <!-- Mother Selection -->
+                        <div class="dog-card">
+                            <h3>🔴 Selecionar Cão Mãe</h3>
+                            <div class="form-group">
+                                <label for="selectedMother">Escolha uma fêmea:</label>
+                                <select id="selectedMother" required onchange="updateMotherInfo()">
+                                    <option value="">Selecione uma fêmea...</option>
+                                </select>
+                            </div>
+                            <div id="motherInfo" class="dog-info" style="display: none;"></div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="showGenotype" checked>
-                            Mostrar Genótipo (Alelos)
-                        </label>
-                    </div>
+                    <!-- Simulation Settings -->
+                    <div class="simulation-settings">
+                        <h3>⚙️ Configuração da Simulação</h3>
+                        
+                        <div class="form-group">
+                            <label for="litterSize">Tamanho da Ninhada:</label>
+                            <input type="number" id="litterSize" min="1" max="100" value="20">
+                        </div>
 
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="showHealthAlerts" checked>
-                            Mostrar Alertas de Saúde
-                        </label>
-                    </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="showGenotype" checked>
+                                Mostrar Genótipo (Alelos)
+                            </label>
+                        </div>
 
-                    <div class="info-box">
-                        <h3>⚠️ Informações Importantes</h3>
-                        <ul>
-                            <li>Este simulador usa modelos genéticos conhecidos para a raça Spitz Alemão Anão</li>
-                            <li>Resultados são estimativas baseadas em herança mendeliana</li>
-                            <li>Alguns genes têm interações complexas não totalmente capturadas aqui</li>
-                            <li>Consulte um geneticista canino para cruzamentos críticos</li>
-                            <li><strong>Alertas de saúde críticos:</strong> Double Merle (MM) causa cegueira e surdez</li>
-                        </ul>
-                    </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="showHealthAlerts" checked>
+                                Mostrar Alertas de Saúde
+                            </label>
+                        </div>
 
-                    <button id="simulateBtn" class="btn-primary">▶ Simular Cruzamento</button>
+                        <div class="info-box">
+                            <h3>⚠️ Informações Importantes</h3>
+                            <ul>
+                                <li>Este simulador usa modelos genéticos conhecidos para a raça Spitz Alemão Anão</li>
+                                <li>A árvore genealógica é analisada para detectar genes recessivos escondidos</li>
+                                <li>Resultados são estimativas baseadas em herança mendeliana</li>
+                                <li>Consulte um geneticista canino para cruzamentos críticos</li>
+                            </ul>
+                        </div>
+
+                        <button id="simulateBtn" class="btn-primary" onclick="validateAndSimulate()">▶ Simular Cruzamento</button>
+                    </div>
                 </div>
             </section>
 
@@ -302,6 +268,50 @@
                 <div class="reference-container">
                     <h2>📚 Guia de Referência Genética</h2>
                     
+                    <div class="reference-section">
+                        <h3>Como Funciona a Herança de Genes Recessivos</h3>
+                        <p><strong>A Regra dos 50%:</strong> O cão herda exatamente uma carta (alelo) de cada pai.</p>
+                        <ul>
+                            <li><strong>Pais:</strong> 50% de chance de passar um gene específico</li>
+                            <li><strong>Avós:</strong> 25% de chance de um gene chegar ao neto</li>
+                            <li><strong>Bisavós:</strong> 12,5% de chance</li>
+                        </ul>
+                        <p style="margin-top: 1rem; padding: 1rem; background: rgba(108, 92, 231, 0.1); border-radius: 6px;">
+                            <strong>Exemplo:</strong> Um cão preto pode ser portador de chocolate (Bb) se um avó dele era chocolate. Visualmente parece preto puro, mas carrega o gene recessivo no DNA.
+                        </p>
+                    </div>
+
+                    <div class="reference-section">
+                        <h3>Genes Recessivos que Viajam Escondidos</h3>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr style="background: var(--bg-color);">
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">Característica</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">Se na Árvore...</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">O Neto Pode Ser...</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Chocolate</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Pai/Mãe/Avó Chocolate</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador de Chocolate (Bb)</td>
+                            </tr>
+                            <tr style="background: rgba(108, 92, 231, 0.02);">
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Diluição (Azul)</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Ancestral Azul/Beaver</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador de Diluição (Dd)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Creme/Branco</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Ancestral Branco/Creme</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador de Creme (Ee)</td>
+                            </tr>
+                            <tr style="background: rgba(108, 92, 231, 0.02);">
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Particolor</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Ancestral Manchado</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador de Particolor (Ssp)</td>
+                            </tr>
+                        </table>
+                    </div>
+
                     <div class="reference-section">
                         <h3>Locus A - Agouti (Coloração)</h3>
                         <ul>
@@ -353,9 +363,6 @@
                             <li><strong>Ii:</strong> Laranja Padrão (Intermediário)</li>
                             <li><strong>ii:</strong> Creme / Branco (Recessivo)</li>
                         </ul>
-                        <p style="margin-top: 1rem; padding: 1rem; background: rgba(108, 92, 231, 0.1); border-radius: 6px; font-size: 0.9rem;">
-                            <strong>Nota Importante:</strong> Um cão preto que é filho de um creme carrega o gene <strong>i</strong>. Se cruzado com uma fêmea laranja, pode produzir filhotes cremes. Use o campo de Intensidade para registrar esses portadores.
-                        </p>
                     </div>
 
                     <div class="reference-section">

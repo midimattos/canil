@@ -1,8 +1,8 @@
 // ============================================================
-// SPITZ GENETIC PREDICTOR - Script Principal (Versão Completa)
+// SPITZ GENETIC PREDICTOR - Sistema Completo com Canil (VERSÃO FINAL)
 // ============================================================
 
-// Genetic Database - Lócus e Alelos
+// Genetic Database
 const geneticsDB = {
   loci: {
     Locus_A: {
@@ -82,6 +82,7 @@ const geneticsDB = {
 
 // Global State
 let state = {
+  kennel: [],
   father: null,
   mother: null,
   simulationResults: []
@@ -98,6 +99,20 @@ if ('serviceWorker' in navigator) {
       updateOfflineStatus();
     })
     .catch(err => console.log('Service Worker registration failed'));
+}
+
+// LocalStorage Management
+function saveKennelToLocalStorage() {
+  localStorage.setItem('spitzKennel', JSON.stringify(state.kennel));
+  console.log('Canil salvo:', state.kennel);
+}
+
+function loadKennelFromLocalStorage() {
+  const saved = localStorage.getItem('spitzKennel');
+  if (saved) {
+    state.kennel = JSON.parse(saved);
+    console.log('Canil carregado:', state.kennel);
+  }
 }
 
 function updateOfflineStatus() {
@@ -126,44 +141,43 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // ============================================================
-// FUNÇÕES DE INTERFACE
+// KENNEL MANAGEMENT
 // ============================================================
 
-function resetForm(formId) {
-  document.getElementById(formId).reset();
-  const parent = formId === 'fatherForm' ? 'father' : 'mother';
-  updateMaskVisibility(parent);
-  updateIntensityLabel(parent);
-}
-
-function updateMaskVisibility(parent) {
-  const baseColorId = parent === 'father' ? 'fatherBaseColor' : 'motherBaseColor';
-  const maskGroupId = parent === 'father' ? 'fatherMaskGroup' : 'motherMaskGroup';
-  const maskId = parent === 'father' ? 'fatherMask' : 'motherMask';
+function toggleRegisterDog() {
+  const form = document.getElementById('registerDogForm');
+  const maskGroup = document.getElementById('dogMaskGroup');
+  const intensityHint = document.getElementById('dogIntensityHint');
   
-  const baseColor = document.getElementById(baseColorId).value;
-  const maskGroup = document.getElementById(maskGroupId);
-  const maskSelect = document.getElementById(maskId);
-  
-  // Máscara visível apenas para Laranja, Vermelho ou Wolf Sable
-  if (['laranja', 'wolf_sable'].includes(baseColor)) {
-    maskGroup.style.display = 'block';
-    maskSelect.required = true;
+  if (form.style.display === 'none' || form.style.display === '') {
+    form.style.display = 'block';
+    document.getElementById('newDogForm').reset();
+    updateDogMaskVisibility();
+    updateDogIntensityLabel();
+    updateParentSelects();
   } else {
+    form.style.display = 'none';
     maskGroup.style.display = 'none';
-    maskSelect.required = false;
-    maskSelect.value = '';
+    intensityHint.style.display = 'none';
   }
 }
 
-function updateIntensityLabel(parent) {
-  const baseColorId = parent === 'father' ? 'fatherBaseColor' : 'motherBaseColor';
-  const intensityHintId = parent === 'father' ? 'fatherIntensityHint' : 'motherIntensityHint';
+function updateDogMaskVisibility() {
+  const baseColor = document.getElementById('dogBaseColor').value;
+  const maskGroup = document.getElementById('dogMaskGroup');
   
-  const baseColor = document.getElementById(baseColorId).value;
-  const intensityHint = document.getElementById(intensityHintId);
+  if (['laranja', 'wolf_sable'].includes(baseColor)) {
+    maskGroup.style.display = 'block';
+  } else {
+    maskGroup.style.display = 'none';
+    document.getElementById('dogMask').value = '';
+  }
+}
+
+function updateDogIntensityLabel() {
+  const baseColor = document.getElementById('dogBaseColor').value;
+  const intensityHint = document.getElementById('dogIntensityHint');
   
-  // Se for cor escura (Preto ou Chocolate), mostrar aviso
   if (baseColor === 'preto' || baseColor === 'chocolate') {
     intensityHint.style.display = 'block';
   } else {
@@ -171,192 +185,502 @@ function updateIntensityLabel(parent) {
   }
 }
 
-// ============================================================
-// MAPEAMENTO FENÓTIPO → GENÓTIPO (CORRIGIDO)
-// ============================================================
+function updateParentSelects() {
+  const fatherSelect = document.getElementById('dogFather');
+  const motherSelect = document.getElementById('dogMother');
 
-function inferGenotype(characteristics) {
-  const genotype = {
-    A: ['a', 'a'],
-    K: ['k', 'k'],
-    E: ['E', 'E'],
-    B: ['B', 'B'],
-    D: ['D', 'D'],
-    I: ['I', 'I'],
-    M: ['m', 'm'],
-    S: ['S', 'S'],
-    T: ['T', 't']
+  fatherSelect.innerHTML = '<option value="">Selecione um cão registrado...</option>';
+  motherSelect.innerHTML = '<option value="">Selecione um cão registrado...</option>';
+
+  state.kennel.filter(dog => dog.sex === 'M').forEach(dog => {
+    const option = document.createElement('option');
+    option.value = dog.id;
+    option.textContent = `${dog.name} (${dog.baseColor})`;
+    fatherSelect.appendChild(option);
+  });
+
+  state.kennel.filter(dog => dog.sex === 'F').forEach(dog => {
+    const option = document.createElement('option');
+    option.value = dog.id;
+    option.textContent = `${dog.name} (${dog.baseColor})`;
+    motherSelect.appendChild(option);
+  });
+}
+
+// Register new dog
+document.getElementById('newDogForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const newDog = {
+    id: Date.now().toString(),
+    name: document.getElementById('dogName').value,
+    sex: document.getElementById('dogSex').value,
+    coat: document.getElementById('dogCoat').value,
+    baseColor: document.getElementById('dogBaseColor').value,
+    dilution: document.getElementById('dogDilution').value,
+    marking: document.getElementById('dogMarking').value,
+    mask: document.getElementById('dogMask')?.value || 'sem_mascara',
+    intensity: document.getElementById('dogIntensity').value,
+    merle: document.getElementById('dogMerle').value,
+    nose: document.getElementById('dogNose').value,
+    ticking: document.getElementById('dogTicking').value,
+    fatherId: document.getElementById('dogFather').value || null,
+    motherId: document.getElementById('dogMother').value || null,
+    registeredDate: new Date().toISOString()
   };
 
-  // ========== COLORAÇÃO BASE ==========
-  switch (characteristics.baseColor) {
-    case 'preto':
-      genotype.K = ['K', 'k'];
-      genotype.B = ['B', 'B'];
-      genotype.E = ['E', 'E'];
-      break;
+  const characteristics = {
+    baseColor: newDog.baseColor,
+    dilution: newDog.dilution,
+    marking: newDog.marking,
+    mask: newDog.mask,
+    intensity: newDog.intensity,
+    merle: newDog.merle,
+    nose: newDog.nose,
+    ticking: newDog.ticking
+  };
 
-    case 'chocolate':
-      genotype.K = ['k', 'k'];
-      genotype.B = ['b', 'b'];
-      genotype.E = ['E', 'E'];
-      break;
+  newDog.genotype = inferGenotypeWithPedigree(characteristics, newDog.fatherId, newDog.motherId);
 
-    case 'laranja':
-      genotype.K = ['k', 'k'];
-      genotype.B = ['B', 'B'];
-      genotype.E = ['E', 'E'];
-      break;
+  state.kennel.push(newDog);
+  saveKennelToLocalStorage();
 
-    case 'creme':
-      genotype.E = ['e', 'e'];
-      genotype.I = ['i', 'i'];
-      genotype.K = ['k', 'k'];
-      break;
+  toggleRegisterDog();
+  renderKennelList();
+  updateSelectionSelects();
 
-    case 'branco':
-      genotype.E = ['e', 'e'];
-      genotype.I = ['i', 'i'];
-      genotype.K = ['k', 'k'];
-      break;
+  alert(`✓ ${newDog.name} registrado com sucesso!`);
+});
 
-    case 'wolf_sable':
-      genotype.K = ['k', 'k'];
-      genotype.A = ['Aw', 'Aw'];
-      genotype.E = ['E', 'E'];
-      break;
+function renderKennelList() {
+  const list = document.getElementById('kennelList');
+  
+  if (state.kennel.length === 0) {
+    list.innerHTML = '<p class="placeholder">Nenhum cão registrado ainda. Clique em "Registrar Novo Cão" para começar!</p>';
+    return;
   }
 
-  // ========== DILUIÇÃO (Locus D) ==========
-  genotype.D = characteristics.dilution === 'diluida' ? ['d', 'd'] : ['D', 'D'];
+  let html = '<div class="dogs-list">';
+  
+  state.kennel.forEach(dog => {
+    const father = dog.fatherId ? state.kennel.find(d => d.id === dog.fatherId) : null;
+    const mother = dog.motherId ? state.kennel.find(d => d.id === dog.motherId) : null;
 
-  // ========== MARCAÇÃO (Locus A e S) ==========
-  switch (characteristics.marking) {
-    case 'solido':
-      genotype.K = ['K', 'K'];
-      genotype.A = ['Ay', 'Ay'];
-      genotype.S = ['S', 'S'];
-      break;
+    html += `
+      <div class="dog-card-kennel">
+        <div class="dog-header-kennel">
+          <h4>${dog.name} ${dog.sex === 'M' ? '♂' : '♀'}</h4>
+          <button class="btn-delete" onclick="deleteDog('${dog.id}')">🗑️</button>
+        </div>
 
-    case 'tan_points':
-      genotype.A = ['at', 'at'];
-      genotype.S = ['si', 'si'];
-      break;
+        <div class="dog-details">
+          <p><strong>Cor:</strong> ${dog.baseColor}</p>
+          <p><strong>Diluição:</strong> ${dog.dilution}</p>
+          <p><strong>Marcação:</strong> ${dog.marking}</p>
+          <p><strong>Merle:</strong> ${dog.merle}</p>
+          <p><strong>Trufa:</strong> ${dog.nose}</p>
+        </div>
 
-    case 'sable':
-      genotype.A = ['Ay', 'Ay'];
-      genotype.S = ['S', 'S'];
-      break;
+        ${father || mother ? `
+          <div class="dog-pedigree">
+            <strong>Pedigree:</strong><br>
+            Pai: ${father ? father.name : 'Não registrado'}<br>
+            Mãe: ${mother ? mother.name : 'Não registrada'}
+          </div>
+        ` : ''}
 
-    case 'particolor':
-      genotype.S = ['sp', 'sp'];
-      break;
+        <div class="dog-genotype-display">
+          <strong>Genótipo (Herdado):</strong><br>
+          <small>${formatGenotype(dog.genotype)}</small>
+        </div>
+      </div>
+    `;
+  });
 
-    case 'irlandesa':
-      genotype.S = ['si', 'si'];
-      break;
+  html += '</div>';
+  list.innerHTML = html;
+}
 
-    case 'branco_extremo':
-      genotype.S = ['sw', 'sw'];
-      break;
+function deleteDog(dogId) {
+  if (confirm('Tem certeza que deseja deletar este cão?')) {
+    state.kennel = state.kennel.filter(dog => dog.id !== dogId);
+    saveKennelToLocalStorage();
+    renderKennelList();
+    updateSelectionSelects();
+  }
+}
+
+function updateSelectionSelects() {
+  const fatherSelect = document.getElementById('selectedFather');
+  const motherSelect = document.getElementById('selectedMother');
+
+  fatherSelect.innerHTML = '<option value="">Selecione um macho...</option>';
+  motherSelect.innerHTML = '<option value="">Selecione uma fêmea...</option>';
+
+  state.kennel.filter(dog => dog.sex === 'M').forEach(dog => {
+    const option = document.createElement('option');
+    option.value = dog.id;
+    option.textContent = dog.name;
+    fatherSelect.appendChild(option);
+  });
+
+  state.kennel.filter(dog => dog.sex === 'F').forEach(dog => {
+    const option = document.createElement('option');
+    option.value = dog.id;
+    option.textContent = dog.name;
+    motherSelect.appendChild(option);
+  });
+}
+
+function updateFatherInfo() {
+  const dogId = document.getElementById('selectedFather').value;
+  const infoDiv = document.getElementById('fatherInfo');
+
+  if (!dogId) {
+    infoDiv.style.display = 'none';
+    return;
   }
 
-  // ========== MÁSCARA (Locus E) ==========
-  if (characteristics.mask === 'mascara_negra') {
-    genotype.E = ['Em', 'Em'];
+  const dog = state.kennel.find(d => d.id === dogId);
+  if (dog) {
+    infoDiv.innerHTML = `
+      <p><strong>${dog.name}</strong></p>
+      <p>Cor: ${dog.baseColor}</p>
+      <p>Merle: ${dog.merle}</p>
+      <p>Genótipo: <small>${formatGenotype(dog.genotype)}</small></p>
+    `;
+    infoDiv.style.display = 'block';
+  }
+}
+
+function updateMotherInfo() {
+  const dogId = document.getElementById('selectedMother').value;
+  const infoDiv = document.getElementById('motherInfo');
+
+  if (!dogId) {
+    infoDiv.style.display = 'none';
+    return;
   }
 
-  // ========== INTENSIDADE (Locus I - Dominância Incompleta) ==========
-  switch (characteristics.intensity) {
-    case 'vermelho_intenso':
-      genotype.I = ['I', 'I'];
-      break;
+  const dog = state.kennel.find(d => d.id === dogId);
+  if (dog) {
+    infoDiv.innerHTML = `
+      <p><strong>${dog.name}</strong></p>
+      <p>Cor: ${dog.baseColor}</p>
+      <p>Merle: ${dog.merle}</p>
+      <p>Genótipo: <small>${formatGenotype(dog.genotype)}</small></p>
+    `;
+    infoDiv.style.display = 'block';
+  }
+}
 
-    case 'laranja_padrao':
-      genotype.I = ['I', 'i'];
-      break;
+// ============================================================
+// FUNÇÕES DE BUSCA RECURSIVA EM PEDIGREE
+// ============================================================
 
-    case 'creme_branco':
-      genotype.I = ['i', 'i'];
-      break;
+function checkChocolateInPedigree(dog) {
+  if (!dog) return false;
+  
+  if (dog.baseColor === 'chocolate') {
+    return true;
   }
 
-  // ========== MARMOREIO (Locus M) ==========
-  switch (characteristics.merle) {
-    case 'nao':
-      genotype.M = ['m', 'm'];
-      break;
-
-    case 'merle':
-      genotype.M = ['M', 'm'];
-      break;
-
-    case 'harlequin':
-      genotype.M = ['Mh', 'm'];
-      break;
-
-    case 'oculto':
-      genotype.M = ['Mc', 'm'];
-      break;
+  if (dog.genotype && dog.genotype.Locus_B && dog.genotype.Locus_B.includes('b')) {
+    return true;
   }
 
-  // ========== TRUFAGEM (Cor do Nariz - Locus B e D) ==========
-  switch (characteristics.nose) {
-    case 'preta':
-      genotype.B = ['B', 'B'];
-      genotype.D = ['D', 'D'];
-      break;
+  const father = dog.fatherId ? state.kennel.find(d => d.id === dog.fatherId) : null;
+  const mother = dog.motherId ? state.kennel.find(d => d.id === dog.motherId) : null;
 
-    case 'marrom':
-      genotype.B = ['b', 'b'];
-      break;
+  return checkChocolateInPedigree(father) || checkChocolateInPedigree(mother);
+}
 
-    case 'azul':
-      genotype.B = ['B', 'B'];
-      genotype.D = ['d', 'd'];
-      break;
-
-    case 'lilas_beaver':
-      genotype.B = ['b', 'b'];
-      genotype.D = ['d', 'd'];
-      break;
+function checkDilutionInPedigree(dog) {
+  if (!dog) return false;
+  
+  if (dog.dilution === 'diluida' || dog.baseColor === 'azul' || dog.baseColor === 'lilás') {
+    return true;
   }
 
-  // ========== PIGMENTAÇÃO (Locus T) ==========
-  genotype.T = characteristics.ticking === 'com_pintas' ? ['T', 't'] : ['t', 't'];
+  if (dog.genotype && dog.genotype.Locus_D && dog.genotype.Locus_D.includes('d')) {
+    return true;
+  }
+
+  const father = dog.fatherId ? state.kennel.find(d => d.id === dog.fatherId) : null;
+  const mother = dog.motherId ? state.kennel.find(d => d.id === dog.motherId) : null;
+
+  return checkDilutionInPedigree(father) || checkDilutionInPedigree(mother);
+}
+
+function checkCreamInPedigree(dog) {
+  if (!dog) return false;
+  
+  if (dog.baseColor === 'creme' || dog.baseColor === 'branco') {
+    return true;
+  }
+
+  if (dog.genotype && dog.genotype.Locus_E && dog.genotype.Locus_E.includes('e')) {
+    return true;
+  }
+
+  const father = dog.fatherId ? state.kennel.find(d => d.id === dog.fatherId) : null;
+  const mother = dog.motherId ? state.kennel.find(d => d.id === dog.motherId) : null;
+
+  return checkCreamInPedigree(father) || checkCreamInPedigree(mother);
+}
+
+function checkAgoutiInPedigree(dog) {
+  if (!dog) return false;
+  
+  if (dog.genotype && dog.genotype.Locus_K && dog.genotype.Locus_K.includes('k')) {
+    return true;
+  }
+
+  const father = dog.fatherId ? state.kennel.find(d => d.id === dog.fatherId) : null;
+  const mother = dog.motherId ? state.kennel.find(d => d.id === dog.motherId) : null;
+
+  return checkAgoutiInPedigree(father) || checkAgoutiInPedigree(mother);
+}
+
+function checkParticulorInPedigree(dog) {
+  if (!dog) return false;
+  
+  if (dog.marking === 'particolor' || dog.genotype?.Locus_S?.includes('sp')) {
+    return true;
+  }
+
+  const father = dog.fatherId ? state.kennel.find(d => d.id === dog.fatherId) : null;
+  const mother = dog.motherId ? state.kennel.find(d => d.id === dog.motherId) : null;
+
+  return checkParticulorInPedigree(father) || checkParticulorInPedigree(mother);
+}
+
+// ============================================================
+// INFERÊNCIA DE GENÓTIPO COM ANÁLISE DE PEDIGREE (CORRIGIDO)
+// ============================================================
+
+function inferGenotypeWithPedigree(characteristics, fatherId, motherId) {
+  // Passo 1: Inferir genótipo baseado nas características fenotípicas
+  let genotype = inferGenotype(characteristics);
+
+  // Passo 2: Analisar pedigree para genes recessivos escondidos
+  const father = fatherId ? state.kennel.find(d => d.id === fatherId) : null;
+  const mother = motherId ? state.kennel.find(d => d.id === motherId) : null;
+
+  console.log('=== ANÁLISE DE PEDIGREE ===');
+  console.log('Cão:', characteristics.baseColor, characteristics.marking);
+  console.log('Pai:', father?.name, father?.baseColor);
+  console.log('Mãe:', mother?.name, mother?.baseColor);
+
+  // ========== VERIFICAÇÃO: CHOCOLATE (b recessivo) ==========
+  if (checkChocolateInPedigree(father) || checkChocolateInPedigree(mother)) {
+    if (characteristics.baseColor !== 'chocolate') {
+      console.log('✓ Gene Chocolate detectado no pedigree');
+      genotype.Locus_B = ['B', 'b']; // Preto portador de chocolate
+    }
+  }
+
+  // ========== VERIFICAÇÃO: DILUIÇÃO (d recessivo) ==========
+  if (checkDilutionInPedigree(father) || checkDilutionInPedigree(mother)) {
+    if (characteristics.dilution === 'densa') {
+      console.log('✓ Gene Diluição detectado no pedigree');
+      genotype.Locus_D = ['D', 'd']; // Portador de diluição
+    }
+  }
+
+  // ========== VERIFICAÇÃO: CREME/BRANCO (e recessivo) ==========
+  if (checkCreamInPedigree(father) || checkCreamInPedigree(mother)) {
+    if (characteristics.baseColor !== 'creme' && characteristics.baseColor !== 'branco') {
+      console.log('✓ Gene Creme detectado no pedigree');
+      genotype.Locus_E = ['E', 'e']; // Portador de creme
+    }
+  }
+
+  // ========== VERIFICAÇÃO: AGOUTI (k recessivo) ==========
+  if (checkAgoutiInPedigree(father) || checkAgoutiInPedigree(mother)) {
+    if (characteristics.baseColor === 'preto' && characteristics.marking === 'solido') {
+      // Cão preto que herda gene k de um pai agouti
+      if (genotype.Locus_K[0] === 'K' && genotype.Locus_K[1] === 'K') {
+        console.log('✓ Gene Agouti detectado no pedigree');
+        genotype.Locus_K = ['K', 'k']; // Preto portador de agouti
+      }
+    }
+  }
+
+  // ========== VERIFICAÇÃO: PARTICOLOR (sp recessivo) ==========
+  if (checkParticulorInPedigree(father) || checkParticulorInPedigree(mother)) {
+    if (characteristics.marking === 'solido') {
+      console.log('✓ Gene Particolor detectado no pedigree');
+      genotype.Locus_S = ['S', 'sp']; // Portador de particolor
+    }
+  }
+
+  console.log('Genótipo Final:', genotype);
+  console.log('========================\n');
 
   return genotype;
 }
 
 // ============================================================
-// LEITURA DO FORMULÁRIO
+// INFERÊNCIA DE GENÓTIPO BASE (CORRIGIDO)
 // ============================================================
 
-function readDogForm(formId) {
-  const parent = formId === 'fatherForm' ? 'father' : 'mother';
-  const nameId = parent === 'father' ? 'fatherName' : 'motherName';
-  
-  const name = document.getElementById(nameId).value || 
-               (parent === 'father' ? 'Cão Pai' : 'Cão Mãe');
-  
-  const characteristics = {
-    name: name,
-    coat: document.getElementById(`${parent}Coat`).value,
-    baseColor: document.getElementById(`${parent}BaseColor`).value,
-    dilution: document.getElementById(`${parent}Dilution`).value,
-    marking: document.getElementById(`${parent}Marking`).value,
-    mask: document.getElementById(`${parent}Mask`)?.value || 'sem_mascara',
-    intensity: document.getElementById(`${parent}Intensity`).value,
-    merle: document.getElementById(`${parent}Merle`).value,
-    nose: document.getElementById(`${parent}Nose`).value,
-    ticking: document.getElementById(`${parent}Ticking`).value
+function inferGenotype(characteristics) {
+  const genotype = {
+    Locus_A: ['a', 'a'],
+    Locus_K: ['k', 'k'],
+    Locus_E: ['E', 'E'],
+    Locus_B: ['B', 'B'],
+    Locus_D: ['D', 'D'],
+    Locus_I: ['I', 'I'],
+    Locus_M: ['m', 'm'],
+    Locus_S: ['S', 'S'],
+    Locus_T: ['T', 't']
   };
 
-  return {
-    name: characteristics.name,
-    characteristics: characteristics,
-    genotype: inferGenotype(characteristics)
-  };
+  // ========== COLORAÇÃO BASE ==========
+  switch (characteristics.baseColor) {
+    case 'preto':
+      genotype.Locus_K = ['K', 'k']; // Heterozigoto para permitir portadores
+      genotype.Locus_B = ['B', 'B'];
+      genotype.Locus_E = ['E', 'E'];
+      break;
+
+    case 'chocolate':
+      genotype.Locus_K = ['k', 'k'];
+      genotype.Locus_B = ['b', 'b'];
+      genotype.Locus_E = ['E', 'E'];
+      break;
+
+    case 'laranja':
+      genotype.Locus_K = ['k', 'k'];
+      genotype.Locus_B = ['B', 'B'];
+      genotype.Locus_E = ['E', 'E'];
+      break;
+
+    case 'creme':
+      genotype.Locus_E = ['e', 'e'];
+      genotype.Locus_I = ['i', 'i'];
+      genotype.Locus_K = ['k', 'k'];
+      break;
+
+    case 'branco':
+      genotype.Locus_E = ['e', 'e'];
+      genotype.Locus_I = ['i', 'i'];
+      genotype.Locus_K = ['k', 'k'];
+      break;
+
+    case 'wolf_sable':
+      genotype.Locus_K = ['k', 'k'];
+      genotype.Locus_A = ['Aw', 'Aw'];
+      genotype.Locus_E = ['E', 'E'];
+      break;
+  }
+
+  // ========== DILUIÇÃO ==========
+  genotype.Locus_D = characteristics.dilution === 'diluida' ? ['d', 'd'] : ['D', 'D'];
+
+  // ========== MARCAÇÃO - NÃO SOBRESCREVE K SE JÁ FOI DEFINIDO ==========
+  switch (characteristics.marking) {
+    case 'solido':
+      // Não sobrescrever se já foi definido como K/k pelo pedigree
+      if (genotype.Locus_K[1] === 'k') {
+        // Deixar como está (já é K/k do pedigree)
+      } else {
+        genotype.Locus_K = ['K', 'K'];
+      }
+      genotype.Locus_A = ['Ay', 'Ay'];
+      genotype.Locus_S = ['S', 'S'];
+      break;
+
+    case 'tan_points':
+      genotype.Locus_A = ['at', 'at'];
+      genotype.Locus_S = ['si', 'si'];
+      break;
+
+    case 'sable':
+      genotype.Locus_A = ['Ay', 'Ay'];
+      genotype.Locus_S = ['S', 'S'];
+      break;
+
+    case 'particolor':
+      genotype.Locus_S = ['sp', 'sp'];
+      break;
+
+    case 'irlandesa':
+      genotype.Locus_S = ['si', 'si'];
+      break;
+
+    case 'branco_extremo':
+      genotype.Locus_S = ['sw', 'sw'];
+      break;
+  }
+
+  // ========== MÁSCARA ==========
+  if (characteristics.mask === 'mascara_negra') {
+    genotype.Locus_E = ['Em', 'Em'];
+  }
+
+  // ========== INTENSIDADE ==========
+  switch (characteristics.intensity) {
+    case 'vermelho_intenso':
+      genotype.Locus_I = ['I', 'I'];
+      break;
+
+    case 'laranja_padrao':
+      genotype.Locus_I = ['I', 'i'];
+      break;
+
+    case 'creme_branco':
+      genotype.Locus_I = ['i', 'i'];
+      break;
+  }
+
+  // ========== MARMOREIO ==========
+  switch (characteristics.merle) {
+    case 'nao':
+      genotype.Locus_M = ['m', 'm'];
+      break;
+
+    case 'merle':
+      genotype.Locus_M = ['M', 'm'];
+      break;
+
+    case 'harlequin':
+      genotype.Locus_M = ['Mh', 'm'];
+      break;
+
+    case 'oculto':
+      genotype.Locus_M = ['Mc', 'm'];
+      break;
+  }
+
+  // ========== TRUFAGEM ==========
+  switch (characteristics.nose) {
+    case 'preta':
+      genotype.Locus_B = ['B', 'B'];
+      genotype.Locus_D = ['D', 'D'];
+      break;
+
+    case 'marrom':
+      genotype.Locus_B = ['b', 'b'];
+      break;
+
+    case 'azul':
+      genotype.Locus_B = ['B', 'B'];
+      genotype.Locus_D = ['d', 'd'];
+      break;
+
+    case 'lilas_beaver':
+      genotype.Locus_B = ['b', 'b'];
+      genotype.Locus_D = ['d', 'd'];
+      break;
+  }
+
+  // ========== PIGMENTAÇÃO ==========
+  genotype.Locus_T = characteristics.ticking === 'com_pintas' ? ['T', 't'] : ['t', 't'];
+
+  return genotype;
 }
 
 // ============================================================
@@ -370,14 +694,13 @@ function getLocusProbabilities(parent1Alleles, parent2Alleles) {
       outcomes.push([a1, a2]);
     });
   });
-  return outcomes; // Sempre 4 combinações
+  return outcomes;
 }
 
 function generateOffspringWithProbabilities(father, mother, count = 20) {
   const loci = Object.keys(father.genotype);
   const offspring = [];
 
-  // Calcular todas as combinações possíveis para cada locus
   const allCombinations = [];
   
   for (let locusIdx = 0; locusIdx < loci.length; locusIdx++) {
@@ -389,7 +712,6 @@ function generateOffspringWithProbabilities(father, mother, count = 20) {
     allCombinations.push(possibilities);
   }
 
-  // Gerar filhotes usando as probabilidades calculadas
   for (let i = 0; i < count; i++) {
     const genotype = {};
     
@@ -409,21 +731,21 @@ function generateOffspringWithProbabilities(father, mother, count = 20) {
 }
 
 // ============================================================
-// GENÓTIPO → FENÓTIPO (COM REGRAS DE VISIBILIDADE)
+// GENÓTIPO → FENÓTIPO (CORRIGIDO COM LOCUS_A)
 // ============================================================
 
 function genotypeToPhenotype(genotype) {
   const phenotype = {};
 
-  const K = genotype.K;
-  const B = genotype.B;
-  const E = genotype.E;
-  const D = genotype.D;
-  const I = genotype.I;
-  const A = genotype.A;
-  const S = genotype.S;
-  const M = genotype.M;
-  const T = genotype.T;
+  const K = genotype.Locus_K;
+  const B = genotype.Locus_B;
+  const E = genotype.Locus_E;
+  const D = genotype.Locus_D;
+  const I = genotype.Locus_I;
+  const A = genotype.Locus_A;
+  const S = genotype.Locus_S;
+  const M = genotype.Locus_M;
+  const T = genotype.Locus_T;
 
   // ========== COR BASE ==========
   const isEpistatic = E[0] === 'e' && E[1] === 'e';
@@ -431,16 +753,27 @@ function genotypeToPhenotype(genotype) {
   if (isEpistatic) {
     phenotype.baseColor = 'Vermelho/Creme (Epistático ee)';
   } else if (K[0] === 'K' || K[1] === 'K') {
+    // Preto ou Chocolate
     if (B[0] === 'b' && B[1] === 'b') {
       phenotype.baseColor = 'Chocolate';
     } else {
       phenotype.baseColor = 'Preto';
     }
   } else {
+    // kk - AGOUTI: verificar Locus_A
     if (B[0] === 'b' && B[1] === 'b') {
       phenotype.baseColor = 'Chocolate Agouti';
     } else {
-      phenotype.baseColor = 'Laranja/Agouti';
+      // Verificar Locus_A para determinar tipo de agouti
+      if (A[0] === 'Ay' || A[1] === 'Ay') {
+        phenotype.baseColor = 'Sable (Agouti)';
+      } else if (A[0] === 'Aw' || A[1] === 'Aw') {
+        phenotype.baseColor = 'Wolf Sable';
+      } else if (A[0] === 'at' || A[1] === 'at') {
+        phenotype.baseColor = 'Tan Points';
+      } else {
+        phenotype.baseColor = 'Laranja/Agouti';
+      }
     }
   }
 
@@ -449,7 +782,7 @@ function genotypeToPhenotype(genotype) {
     ? 'Diluída (Azul/Lilac)' 
     : 'Densa';
 
-  // ========== MÁSCARA (Só visível em cores quentes) ==========
+  // ========== MÁSCARA ==========
   const hasWarmColors = !isEpistatic && (K[0] === 'k' && K[1] === 'k');
   
   if (hasWarmColors && (E[0] === 'Em' || E[1] === 'Em')) {
@@ -460,7 +793,7 @@ function genotypeToPhenotype(genotype) {
     phenotype.mask = 'N/A (Cor Escura)';
   }
 
-  // ========== INTENSIDADE (Dominância Incompleta) ==========
+  // ========== INTENSIDADE ==========
   if (isEpistatic || (K[0] === 'K' || K[1] === 'K')) {
     if (I[0] === 'I' && I[1] === 'I') {
       phenotype.intensity = 'N/A - Portador: Vermelho Intenso (II)';
@@ -503,7 +836,7 @@ function genotypeToPhenotype(genotype) {
     phenotype.merle = 'Merle Cripto';
   }
 
-  // ========== PINTAS/TICKING (Regra: Só visível com branco) ==========
+  // ========== PINTAS ==========
   const hasWhiteMarkings = !S.every(s => s === 'S');
   
   if (!hasWhiteMarkings) {
@@ -533,16 +866,16 @@ function genotypeToPhenotype(genotype) {
 }
 
 // ============================================================
-// ALERTAS DE SAÚDE GENÉTICA
+// ALERTAS DE SAÚDE
 // ============================================================
 
 function checkHealthAlerts(genotype) {
   const alerts = [];
 
-  const M = genotype.M;
-  const D = genotype.D;
+  const M = genotype.Locus_M;
+  const D = genotype.Locus_D;
 
-  // ========== DOUBLE MERLE ==========
+  // DOUBLE MERLE
   const merleCount = M.filter(a => a !== 'm').length;
   if (merleCount === 2) {
     alerts.push({
@@ -552,7 +885,7 @@ function checkHealthAlerts(genotype) {
     });
   }
 
-  // ========== ALOPECIA POR DILUIÇÃO ==========
+  // ALOPECIA
   if (D[0] === 'd' && D[1] === 'd') {
     alerts.push({
       risk: 'Alopecia por Diluição (dd)',
@@ -565,7 +898,7 @@ function checkHealthAlerts(genotype) {
 }
 
 // ============================================================
-// FORMATAÇÃO PARA EXIBIÇÃO
+// FORMATAÇÃO
 // ============================================================
 
 function formatGenotype(genotype) {
@@ -574,8 +907,56 @@ function formatGenotype(genotype) {
 }
 
 // ============================================================
-// EXIBIÇÃO DE RESULTADOS
+// SIMULAÇÃO
 // ============================================================
+
+function validateAndSimulate() {
+  const fatherId = document.getElementById('selectedFather').value;
+  const motherId = document.getElementById('selectedMother').value;
+
+  if (!fatherId || !motherId) {
+    alert('Por favor, selecione um macho e uma fêmea!');
+    return;
+  }
+
+  state = {
+    kennel: state.kennel,
+    father: null,
+    mother: null,
+    simulationResults: []
+  };
+
+  const father = state.kennel.find(d => d.id === fatherId);
+  const mother = state.kennel.find(d => d.id === motherId);
+
+  state.father = {
+    name: father.name,
+    characteristics: father,
+    genotype: father.genotype
+  };
+
+  state.mother = {
+    name: mother.name,
+    characteristics: mother,
+    genotype: mother.genotype
+  };
+
+  const litterSize = parseInt(document.getElementById('litterSize').value) || 20;
+
+  const offspring = generateOffspringWithProbabilities(state.father, state.mother, litterSize);
+  
+  const puppiesWithInfo = offspring.map(pup => ({
+    ...pup,
+    phenotype: genotypeToPhenotype(pup.genotype),
+    alerts: checkHealthAlerts(pup.genotype)
+  }));
+
+  state.simulationResults = puppiesWithInfo;
+
+  displayResults(puppiesWithInfo, state.father.name, state.mother.name, litterSize);
+
+  document.querySelector('[data-tab="results"]').click();
+}
 
 function displayResults(puppies, fatherName, motherName, litterSize) {
   const container = document.getElementById('resultsContainer');
@@ -697,71 +1078,6 @@ function displayResults(puppies, fatherName, motherName, litterSize) {
   container.innerHTML = html;
 }
 
-// ============================================================
-// VALIDAÇÃO E EVENTOS
-// ============================================================
-
-function validateForms() {
-  const requiredFields = [
-    'fatherCoat', 'fatherBaseColor', 'fatherDilution', 'fatherMarking',
-    'fatherIntensity', 'fatherMerle', 'fatherNose', 'fatherTicking',
-    'motherCoat', 'motherBaseColor', 'motherDilution', 'motherMarking',
-    'motherIntensity', 'motherMerle', 'motherNose', 'motherTicking'
-  ];
-
-  for (let fieldId of requiredFields) {
-    const field = document.getElementById(fieldId);
-    if (!field || !field.value) {
-      alert(`Por favor, preencha todos os campos obrigatórios.`);
-      return false;
-    }
-  }
-
-  return true;
-}
-
-// Simulate button - CORRIGIDO PARA LIMPAR CACHE
-document.getElementById('simulateBtn')?.addEventListener('click', () => {
-  if (!validateForms()) return;
-
-  // LIMPAR STATE ANTERIOR ANTES DE GERAR NOVOS DADOS
-  state = {
-    father: null,
-    mother: null,
-    simulationResults: []
-  };
-
-  // LER OS DADOS DOS FORMULÁRIOS (sempre fresco do DOM)
-  state.father = readDogForm('fatherForm');
-  state.mother = readDogForm('motherForm');
-
-  const litterSize = parseInt(document.getElementById('litterSize').value) || 20;
-
-  // Usar o novo método com probabilidades (Quadrado de Punnett)
-  const offspring = generateOffspringWithProbabilities(state.father, state.mother, litterSize);
-  
-  const puppiesWithInfo = offspring.map(pup => ({
-    ...pup,
-    phenotype: genotypeToPhenotype(pup.genotype),
-    alerts: checkHealthAlerts(pup.genotype)
-  }));
-
-  // Atualizar state com novos resultados
-  state.simulationResults = puppiesWithInfo;
-
-  // Exibir resultados
-  displayResults(
-    puppiesWithInfo,
-    state.father.name,
-    state.mother.name,
-    litterSize
-  );
-
-  // Navegar para a aba de resultados
-  document.querySelector('[data-tab="results"]').click();
-});
-
-// Export results
 function exportResults() {
   const data = {
     timestamp: new Date().toISOString(),
@@ -780,14 +1096,16 @@ function exportResults() {
   URL.revokeObjectURL(url);
 }
 
-// Print results
 function printResults() {
   window.print();
 }
 
-// Add export/print buttons
 document.addEventListener('DOMContentLoaded', () => {
   updateOfflineStatus();
+  loadKennelFromLocalStorage();
+  renderKennelList();
+  updateSelectionSelects();
+  updateParentSelects();
   
   const resultsContainer = document.getElementById('resultsContainer');
   if (resultsContainer) {

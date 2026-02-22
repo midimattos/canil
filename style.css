@@ -40,7 +40,7 @@ html, body {
     min-height: 100vh;
 }
 
-/* Header */
+/* ========== HEADER ========== */
 .header {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     color: white;
@@ -60,7 +60,7 @@ html, body {
     opacity: 0.9;
 }
 
-/* Navigation Tabs */
+/* ========== NAVIGATION TABS ========== */
 .tabs {
     display: flex;
     background: var(--card-bg);
@@ -97,7 +97,7 @@ html, body {
     font-weight: 600;
 }
 
-/* Content Area */
+/* ========== CONTENT AREA ========== */
 .content {
     flex: 1;
     padding: 2rem;
@@ -117,7 +117,7 @@ html, body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Form Styles */
+/* ========== FORM STYLES ========== */
 .two-column {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -181,7 +181,7 @@ html, body {
     cursor: pointer;
 }
 
-/* Buttons */
+/* ========== BUTTONS ========== */
 .btn-primary, .btn-reset {
     padding: 0.875rem 1.5rem;
     border: none;
@@ -221,19 +221,222 @@ html, body {
     color: white;
 }
 
-/* Simulation Container */
-.simulation-container {
+/* ========== KENNEL CONTAINER ========== */
+.kennel-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.kennel-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.kennel-actions {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.kennel-actions .btn-primary {
+    width: auto;
+    margin: 0;
+}
+
+/* ========== REGISTER FORM ========== */
+.register-form {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.register-form h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}
+
+.register-form h4 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.form-actions .btn-primary,
+.form-actions .btn-reset {
+    flex: 1;
+    margin: 0;
+}
+
+/* ========== KENNEL LIST ========== */
+.kennel-list {
+    margin-top: 2rem;
+}
+
+.dogs-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.dog-card-kennel {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--secondary-color);
+    transition: all 0.3s ease;
+}
+
+.dog-card-kennel:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.dog-header-kennel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.dog-header-kennel h4 {
+    color: var(--primary-color);
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.btn-delete {
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+    background: #c0392b;
+    transform: scale(1.05);
+}
+
+.dog-details {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--bg-color);
+    border-radius: 6px;
+}
+
+.dog-details p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+    color: var(--text-color);
+}
+
+.dog-details strong {
+    color: var(--primary-color);
+}
+
+.dog-pedigree {
+    background: rgba(108, 92, 231, 0.05);
+    border-left: 3px solid var(--primary-color);
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.dog-pedigree strong {
+    color: var(--primary-color);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.dog-genotype-display {
+    background: var(--bg-color);
+    border-left: 3px solid var(--text-light);
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.dog-genotype-display strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.dog-genotype-display small {
+    color: var(--text-light);
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+}
+
+/* ========== SIMULATION SETUP ========== */
+.simulation-setup {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.simulation-setup h2 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+}
+
+.dog-info {
+    background: var(--bg-color);
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    border-left: 3px solid var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.dog-info p {
+    margin: 0.5rem 0;
+}
+
+.dog-info strong {
+    color: var(--primary-color);
+}
+
+.dog-info small {
+    color: var(--text-light);
+    font-family: 'Courier New', monospace;
+    display: block;
+    margin-top: 0.5rem;
+}
+
+/* ========== SIMULATION SETTINGS ========== */
+.simulation-settings {
     background: var(--card-bg);
     border-radius: 12px;
     padding: 2rem;
     box-shadow: var(--shadow);
     max-width: 600px;
-    margin: 0 auto;
+    margin: 2rem auto 0;
+    border-top: 4px solid var(--primary-color);
 }
 
-.simulation-container h2 {
-    margin-bottom: 1.5rem;
+.simulation-settings h3 {
     color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .info-box {
@@ -269,7 +472,19 @@ html, body {
     font-weight: bold;
 }
 
-/* Results Container */
+/* ========== FIELD HINT ========== */
+.field-hint {
+    background: rgba(243, 156, 18, 0.1);
+    border-left: 3px solid var(--warning-color);
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    line-height: 1.4;
+}
+
+/* ========== RESULTS CONTAINER ========== */
 .results-container {
     max-width: 1000px;
     margin: 0 auto;
@@ -443,10 +658,15 @@ html, body {
     line-height: 1.4;
 }
 
-/* Reference Container */
+/* ========== REFERENCE CONTAINER ========== */
 .reference-container {
     max-width: 900px;
     margin: 0 auto;
+}
+
+.reference-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
 }
 
 .reference-section {
@@ -485,6 +705,12 @@ html, body {
     font-weight: 700;
 }
 
+.reference-section p {
+    margin: 1rem 0;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
 .alert-box {
     border-left-color: var(--danger-color);
     background: linear-gradient(135deg, var(--card-bg) 0%, rgba(231, 76, 60, 0.05) 100%);
@@ -506,7 +732,7 @@ html, body {
     left: 0;
 }
 
-/* Footer */
+/* ========== FOOTER ========== */
 .footer {
     background: var(--text-color);
     color: white;
@@ -522,7 +748,7 @@ html, body {
     font-weight: 600;
 }
 
-/* Responsive Design */
+/* ========== RESPONSIVE DESIGN ========== */
 @media (max-width: 768px) {
     .title {
         font-size: 1.8rem;
@@ -561,6 +787,37 @@ html, body {
     .dog-card {
         padding: 1.5rem;
     }
+
+    .dogs-list {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn-primary,
+    .form-actions .btn-reset {
+        flex: 1;
+    }
+
+    .kennel-actions {
+        flex-direction: column;
+    }
+
+    .kennel-actions .btn-primary {
+        width: 100%;
+    }
+
+    .dog-header-kennel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .btn-delete {
+        align-self: flex-end;
+    }
 }
 
 @media (max-width: 480px) {
@@ -580,7 +837,7 @@ html, body {
         padding: 0.75rem;
     }
 
-    .dog-card, .simulation-container {
+    .dog-card, .simulation-settings, .register-form {
         padding: 1rem;
     }
 
@@ -595,54 +852,31 @@ html, body {
         padding: 0.6rem 0.4rem;
         font-size: 0.8rem;
     }
+
+    .dogs-list {
+        grid-template-columns: 1fr;
+    }
+
+    .dog-card-kennel {
+        padding: 1rem;
+    }
+
+    .dog-details {
+        padding: 0.75rem;
+    }
+
+    .puppies-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-/* Print Styles */
+/* ========== PRINT STYLES ========== */
 @media print {
-    .tabs, .footer, .btn-primary {
+    .tabs, .footer, .btn-primary, .kennel-actions {
         display: none;
     }
 
     .puppy-card {
         page-break-inside: avoid;
     }
-}
-/* Field Hint */
-.field-hint {
-  background: rgba(243, 156, 18, 0.1);
-  border-left: 3px solid var(--warning-color);
-  padding: 0.75rem;
-  border-radius: 4px;
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-  color: var(--text-color);
-  line-height: 1.4;
-}
-/* Simulation Settings */
-.simulation-settings {
-    background: var(--card-bg);
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: var(--shadow);
-    max-width: 600px;
-    margin: 2rem auto 0;
-    border-top: 4px solid var(--primary-color);
-}
-
-.simulation-settings h3 {
-    margin-bottom: 1.5rem;
-    color: var(--primary-color);
-    font-size: 1.2rem;
-}
-
-/* Field Hint */
-.field-hint {
-    background: rgba(243, 156, 18, 0.1);
-    border-left: 3px solid var(--warning-color);
-    padding: 0.75rem;
-    border-radius: 4px;
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
-    color: var(--text-color);
-    line-height: 1.4;
 }
