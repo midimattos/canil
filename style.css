@@ -33,7 +33,7 @@ html, body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -104,12 +104,7 @@ html, body {
 }
 
 .tab-content {
-    display: none;
     animation: fadeIn 0.3s ease;
-}
-
-.tab-content.active {
-    display: block;
 }
 
 @keyframes fadeIn {
@@ -133,7 +128,8 @@ html, body {
     border-left: 4px solid var(--primary-color);
 }
 
-.dog-card h2 {
+.dog-card h2,
+.dog-card h3 {
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
     color: var(--primary-color);
@@ -149,6 +145,7 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    position: relative;
 }
 
 .form-group label {
@@ -179,6 +176,16 @@ html, body {
     width: 20px;
     height: 20px;
     cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+.form-group input[type="checkbox"] + label,
+.form-group label:has(input[type="checkbox"]) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-weight: 500;
 }
 
 /* ========== BUTTONS ========== */
@@ -221,7 +228,7 @@ html, body {
     color: white;
 }
 
-/* ========== KENNEL CONTAINER ========== */
+/* ========== KENNEL MANAGEMENT ========== */
 .kennel-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -231,6 +238,23 @@ html, body {
     color: var(--primary-color);
     margin-bottom: 1.5rem;
     font-size: 1.8rem;
+}
+
+.kennel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.kennel-header h2 {
+    margin: 0;
+}
+
+.kennel-header .btn-primary {
+    width: auto;
+    margin: 0;
 }
 
 .kennel-actions {
@@ -278,6 +302,28 @@ html, body {
     margin: 0;
 }
 
+/* ========== FIELDSETS ========== */
+fieldset {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+legend {
+    font-weight: 700;
+    color: var(--primary-color);
+    padding: 0 0.5rem;
+    margin-left: -0.5rem;
+}
+
+/* ========== FORM ROW ========== */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
 /* ========== KENNEL LIST ========== */
 .kennel-list {
     margin-top: 2rem;
@@ -316,6 +362,31 @@ html, body {
     color: var(--primary-color);
     margin: 0;
     font-size: 1.2rem;
+}
+
+.dog-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-action {
+    background: var(--border-color);
+    border: none;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-action.btn-delete:hover {
+    background: var(--danger-color);
 }
 
 .btn-delete {
@@ -366,6 +437,19 @@ html, body {
     margin-bottom: 0.5rem;
 }
 
+.dog-proven-colors {
+    background: rgba(0, 184, 148, 0.1);
+    border-left: 3px solid var(--secondary-color);
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.dog-proven-colors strong {
+    color: var(--secondary-color);
+}
+
 .dog-genotype-display {
     background: var(--bg-color);
     border-left: 3px solid var(--text-light);
@@ -386,13 +470,48 @@ html, body {
     word-break: break-all;
 }
 
+/* ========== AUTOCOMPLETE E SUGESTÕES ========== */
+.suggestions-list {
+    position: absolute;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    top: 100%;
+    left: 0;
+}
+
+.suggestion-item {
+    padding: 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s ease;
+}
+
+.suggestion-item:hover {
+    background: rgba(108, 92, 231, 0.1);
+    color: var(--primary-color);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item strong {
+    color: var(--primary-color);
+}
+
 /* ========== SIMULATION SETUP ========== */
-.simulation-setup {
+.simulator-container {
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.simulation-setup h2 {
+.simulator-container h2 {
     color: var(--primary-color);
     margin-bottom: 2rem;
     font-size: 1.8rem;
@@ -669,6 +788,16 @@ html, body {
     margin-bottom: 2rem;
 }
 
+.database-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.database-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
 .reference-section {
     background: var(--card-bg);
     border-radius: 12px;
@@ -732,6 +861,199 @@ html, body {
     left: 0;
 }
 
+/* ========== PEDIGREE TREE MODAL ========== */
+.modal {
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 1400px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    margin: auto;
+}
+
+.close {
+    position: absolute;
+    right: 1.5rem;
+    top: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    z-index: 2001;
+}
+
+.close:hover {
+    color: var(--primary-color);
+}
+
+/* ========== PEDIGREE TREE VISUALIZATION ========== */
+.pedigree-tree-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.02) 0%, rgba(0, 184, 148, 0.02) 100%);
+    border-radius: 8px;
+    min-height: 400px;
+    transform-origin: top center;
+    transition: transform 0.2s ease;
+}
+
+.tree-root {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.tree-lines {
+    position: relative;
+    width: 100%;
+    min-height: 800px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+/* Node Styling */
+.tree-node {
+    position: absolute;
+    background: var(--card-bg);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 1rem;
+    min-width: 160px;
+    width: 180px;
+    text-align: center;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--text-color);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    left: var(--x);
+    top: var(--y);
+}
+
+.tree-node:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--secondary-color);
+}
+
+.tree-node.current-dog {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border-color: var(--primary-dark);
+    font-weight: 700;
+    min-width: 200px;
+    width: 220px;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.3);
+    position: relative;
+    left: auto;
+    top: auto;
+}
+
+.tree-node.father-node {
+    border-color: #3498db;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.05) 0%, rgba(52, 152, 219, 0.02) 100%);
+}
+
+.tree-node.mother-node {
+    border-color: #e74c3c;
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.05) 0%, rgba(231, 76, 60, 0.02) 100%);
+}
+
+.node-content {
+    flex: 1;
+}
+
+.node-content strong {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    word-break: break-word;
+}
+
+.node-content small {
+    display: block;
+    font-size: 0.75rem;
+}
+
+/* Expand Button */
+.btn-expand {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn-expand:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+/* Tree Line Connector */
+.tree-line-connector {
+    position: absolute;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    height: 2px;
+    left: var(--from-x);
+    top: var(--from-y);
+    width: calc(abs(var(--to-x) - var(--from-x)) + 10);
+    pointer-events: none;
+}
+
+/* ========== SCROLL BEHAVIOR ========== */
+.pedigree-tree-container {
+    scroll-behavior: smooth;
+}
+
+.pedigree-tree-container::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.pedigree-tree-container::-webkit-scrollbar-track {
+    background: var(--bg-color);
+    border-radius: 4px;
+}
+
+.pedigree-tree-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.pedigree-tree-container::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
 /* ========== FOOTER ========== */
 .footer {
     background: var(--text-color);
@@ -749,14 +1071,48 @@ html, body {
 }
 
 /* ========== RESPONSIVE DESIGN ========== */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
     .title {
-        font-size: 1.8rem;
+        font-size: 2rem;
     }
 
     .two-column {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+    }
+
+    .dogs-list {
+        grid-template-columns: 1fr;
+    }
+
+    .tree-node {
+        min-width: 140px;
+        width: 160px;
+        padding: 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .tree-node.current-dog {
+        min-width: 160px;
+        width: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+    }
+
+    .content {
+        padding: 1rem;
     }
 
     .tabs {
@@ -771,8 +1127,62 @@ html, body {
         padding: 0.75rem 0.5rem;
     }
 
-    .content {
+    .dog-card {
+        padding: 1.5rem;
+    }
+
+    .register-form {
+        padding: 1.5rem;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+    }
+
+    .pedigree-tree-container {
         padding: 1rem;
+        min-height: 300px;
+    }
+
+    .tree-node {
+        min-width: 120px;
+        width: 140px;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .tree-node.current-dog {
+        min-width: 130px;
+        width: 150px;
+    }
+
+    .btn-expand {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .kennel-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .kennel-header .btn-primary {
+        width: 100%;
+    }
+
+    .dog-header-kennel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .btn-action {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.9rem;
     }
 
     .puppies-grid {
@@ -783,54 +1193,19 @@ html, body {
     .summary-grid {
         grid-template-columns: 1fr;
     }
-
-    .dog-card {
-        padding: 1.5rem;
-    }
-
-    .dogs-list {
-        grid-template-columns: 1fr;
-    }
-
-    .form-actions {
-        flex-direction: column;
-    }
-
-    .form-actions .btn-primary,
-    .form-actions .btn-reset {
-        flex: 1;
-    }
-
-    .kennel-actions {
-        flex-direction: column;
-    }
-
-    .kennel-actions .btn-primary {
-        width: 100%;
-    }
-
-    .dog-header-kennel {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .btn-delete {
-        align-self: flex-end;
-    }
 }
 
 @media (max-width: 480px) {
+    .header {
+        padding: 1rem;
+    }
+
     .title {
         font-size: 1.5rem;
     }
 
     .subtitle {
-        font-size: 0.9rem;
-    }
-
-    .header {
-        padding: 1rem;
+        font-size: 0.85rem;
     }
 
     .content {
@@ -847,10 +1222,34 @@ html, body {
         font-size: 16px;
     }
 
-    .tab-btn {
-        min-width: 80px;
-        padding: 0.6rem 0.4rem;
-        font-size: 0.8rem;
+    .modal-content {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .close {
+        right: 1rem;
+        top: 0.5rem;
+    }
+
+    .pedigree-tree-container {
+        padding: 0.5rem;
+    }
+
+    .tree-node {
+        min-width: 100px;
+        width: 120px;
+        padding: 0.4rem;
+        font-size: 0.7rem;
+    }
+
+    .tree-node.current-dog {
+        min-width: 110px;
+        width: 130px;
+    }
+
+    .tree-node:hover {
+        transform: scale(1.02);
     }
 
     .dogs-list {
@@ -865,18 +1264,438 @@ html, body {
         padding: 0.75rem;
     }
 
+    .btn-primary, .btn-reset {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .results-summary {
+        padding: 1rem;
+    }
+
     .puppies-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .puppy-card {
+        padding: 1rem;
+    }
+
+    .puppy-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .summary-grid {
         grid-template-columns: 1fr;
     }
 }
 
 /* ========== PRINT STYLES ========== */
 @media print {
-    .tabs, .footer, .btn-primary, .kennel-actions {
+    .tabs, .footer, .kennel-actions, .btn-primary, .btn-reset, .btn-action, .btn-delete {
         display: none;
     }
 
     .puppy-card {
         page-break-inside: avoid;
+    }
+
+    .dog-card-kennel {
+        page-break-inside: avoid;
+    }
+
+    .reference-section {
+        page-break-inside: avoid;
+    }
+}
+
+/* ========== PEDIGREE BUILDER TABS ========== */
+.pedigree-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.pedigree-tab-btn {
+    padding: 0.75rem 1.25rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-light);
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    bottom: -2px;
+}
+
+.pedigree-tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.pedigree-tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.pedigree-tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.pedigree-tab-content.active {
+    display: block;
+}
+
+/* ========== PARENT SELECTION ========== */
+.parent-section {
+    background: var(--bg-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.parent-section h5 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.parent-selection {
+    margin-bottom: 1.5rem;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.radio-group input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+/* ========== QUICK INPUT STYLES ========== */
+.quick-input,
+.quick-select {
+    width: 100%;
+    padding: 0.6rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.quick-input:focus,
+.quick-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+/* ========== GRANDPARENTS GRID ========== */
+.grandparents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.grandparent-section {
+    background: var(--bg-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--secondary-color);
+}
+
+.grandparent-section h5 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+/* ========== SECONDARY BUTTON ========== */
+.btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.btn-secondary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* ========== PEDIGREE TREE VISUALIZATION ========== */
+.pedigree-tree-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.02) 0%, rgba(0, 184, 148, 0.02) 100%);
+    border-radius: 8px;
+    min-height: 600px;
+    max-height: 80vh;
+    transform-origin: top center;
+    transition: transform 0.2s ease;
+    position: relative;
+}
+
+.tree-root {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 50;
+}
+
+.tree-lines {
+    position: relative;
+    width: 100%;
+    min-height: 800px;
+    min-width: 1200px;
+    display: block;
+}
+
+/* Node Styling */
+.tree-node {
+    position: absolute;
+    background: var(--card-bg);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 1rem;
+    min-width: 160px;
+    width: 180px;
+    text-align: center;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--text-color);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    left: var(--x);
+    top: var(--y);
+    z-index: 10;
+}
+
+.tree-node:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--secondary-color);
+    z-index: 20;
+}
+
+.tree-node.current-dog {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border-color: var(--primary-dark);
+    font-weight: 700;
+    min-width: 200px;
+    width: 220px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.3);
+}
+
+.tree-node.current-dog:hover {
+    transform: translateX(-50%) scale(1.05);
+}
+
+.tree-node.father-node {
+    border-color: #3498db;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.05) 0%, rgba(52, 152, 219, 0.02) 100%);
+}
+
+.tree-node.mother-node {
+    border-color: #e74c3c;
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.05) 0%, rgba(231, 76, 60, 0.02) 100%);
+}
+
+.node-content {
+    flex: 1;
+    width: 100%;
+}
+
+.node-content strong {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    word-break: break-word;
+}
+
+.node-content small {
+    display: block;
+    font-size: 0.75rem;
+}
+
+/* Expand Button */
+.btn-expand {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn-expand:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+/* Tree Line Connector - SVG Style */
+.tree-line-connector {
+    position: absolute;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    height: 2px;
+    left: var(--from-x);
+    top: var(--from-y);
+    width: calc(abs(var(--to-x) - var(--from-x)) + 20px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ========== SCROLL BEHAVIOR ========== */
+.pedigree-tree-container {
+    scroll-behavior: smooth;
+}
+
+.pedigree-tree-container::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+
+.pedigree-tree-container::-webkit-scrollbar-track {
+    background: var(--bg-color);
+    border-radius: 4px;
+}
+
+.pedigree-tree-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.pedigree-tree-container::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+.pedigree-tree-container::-webkit-scrollbar-corner {
+    background: var(--bg-color);
+}
+
+/* ========== RESPONSIVE TREE ========== */
+@media (max-width: 1200px) {
+    .tree-lines {
+        min-width: 900px;
+    }
+
+    .tree-node {
+        min-width: 140px;
+        width: 160px;
+        padding: 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .tree-node.current-dog {
+        min-width: 160px;
+        width: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .pedigree-tree-container {
+        min-height: 500px;
+        max-height: 70vh;
+        padding: 1rem;
+    }
+
+    .tree-lines {
+        min-width: 700px;
+    }
+
+    .tree-node {
+        min-width: 130px;
+        width: 150px;
+        padding: 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .tree-node.current-dog {
+        min-width: 140px;
+        width: 160px;
+    }
+
+    .btn-expand {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .pedigree-tree-container {
+        min-height: 400px;
+        max-height: 60vh;
+        padding: 0.75rem;
+    }
+
+    .tree-lines {
+        min-width: 500px;
+    }
+
+    .tree-node {
+        min-width: 110px;
+        width: 130px;
+        padding: 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    .tree-node.current-dog {
+        min-width: 120px;
+        width: 140px;
+    }
+
+    .tree-node:hover {
+        transform: scale(1.02);
+    }
+
+    .tree-node.current-dog:hover {
+        transform: translateX(-50%) scale(1.02);
+    }
+
+    .btn-expand {
+        padding: 0.15rem 0.3rem;
+        font-size: 0.65rem;
     }
 }

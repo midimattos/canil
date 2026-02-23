@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6C5CE7">
-    <meta name="description" content="Ferramenta de previsão de ninhadas para Spitz Alemão Anão">
-    <title>Spitz Genetic Predictor</title>
+    <meta name="description" content="Gerenciador de Linhagem de Spitz Alemão Anão">
+    <title>Spitz Lineage Manager</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%236C5CE7' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-weight='bold'>🐕</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%236C5CE7' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-weight='bold'>🐕</text></svg>">
@@ -15,182 +15,406 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1 class="title">🐕 Spitz Genetic Predictor</h1>
-            <p class="subtitle">Ferramenta de previsão de ninhadas para Spitz Alemão Anão</p>
+            <h1 class="title">🐕 Spitz Lineage Manager</h1>
+            <p class="subtitle">Gerenciador Inteligente de Linhagem para Spitz Alemão Anão</p>
         </header>
 
         <!-- Navigation Tabs -->
         <nav class="tabs">
             <button class="tab-btn active" data-tab="kennel">Meu Canil</button>
-            <button class="tab-btn" data-tab="dogs">Simular Cruzamento</button>
-            <button class="tab-btn" data-tab="results">Resultados</button>
+            <button class="tab-btn" data-tab="simulator">Simulador</button>
+            <button class="tab-btn" data-tab="database">Banco de Linhagem</button>
             <button class="tab-btn" data-tab="reference">Referência</button>
         </nav>
 
         <!-- Main Content -->
         <main class="content">
-            <!-- Tab 0: Kennel Management -->
+            <!-- Tab 1: Meu Canil -->
             <section id="kennel" class="tab-content active">
                 <div class="kennel-container">
-                    <h2>🏠 Meu Canil</h2>
-                    
-                    <div class="kennel-actions">
+                    <div class="kennel-header">
+                        <h2>🏠 Meu Canil</h2>
                         <button class="btn-primary" onclick="toggleRegisterDog()">➕ Registrar Novo Cão</button>
                     </div>
 
-                    <!-- Register Dog Form -->
+                    <!-- Register/Edit Dog Form with Pedigree Builder -->
                     <div id="registerDogForm" class="register-form" style="display: none;">
-                        <h3>Registrar Novo Cão</h3>
-                        <form id="newDogForm">
-                            <div class="form-group">
-                                <label for="dogName">Nome do Cão:</label>
-                                <input type="text" id="dogName" required placeholder="Ex: Rex">
-                            </div>
+                        <h3>Registrar/Editar Cão - Construtor de Árvore Genealógica</h3>
+                        
+                        <!-- Pedigree Builder Tabs -->
+                        <div class="pedigree-tabs">
+                            <button class="pedigree-tab-btn active" data-pedigree-tab="puppy" onclick="switchPedigreeTab('puppy')">
+                                1️⃣ Filhote
+                            </button>
+                            <button class="pedigree-tab-btn" data-pedigree-tab="parents" onclick="switchPedigreeTab('parents')">
+                                2️⃣ Pais
+                            </button>
+                            <button class="pedigree-tab-btn" data-pedigree-tab="grandparents" onclick="switchPedigreeTab('grandparents')">
+                                3️⃣ Avós
+                            </button>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="dogSex">Sexo:</label>
-                                <select id="dogSex" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="M">Macho ♂</option>
-                                    <option value="F">Fêmea ♀</option>
-                                </select>
-                            </div>
+                        <!-- Tab: Puppy Data -->
+                        <div class="pedigree-tab-content active" id="puppyTab">
+                            <form id="newDogForm">
+                                <input type="hidden" id="dogId">
 
-                            <div class="form-group">
-                                <label for="dogCoat">Pelagem:</label>
-                                <select id="dogCoat" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="curta">Curta (Padrão)</option>
-                                    <option value="longa">Longa / Abundante</option>
-                                </select>
-                            </div>
+                                <!-- Informações Básicas -->
+                                <fieldset>
+                                    <legend>📋 Informações Básicas do Filhote</legend>
+                                    
+                                    <div class="form-group">
+                                        <label for="dogName">Nome do Cão:</label>
+                                        <input type="text" id="dogName" required placeholder="Ex: Rex">
+                                    </div>
 
-                            <div class="form-group">
-                                <label for="dogBaseColor">Coloração Base:</label>
-                                <select id="dogBaseColor" required onchange="updateDogMaskVisibility(); updateDogIntensityLabel()">
-                                    <option value="">Selecione...</option>
-                                    <option value="preto">Preto</option>
-                                    <option value="chocolate">Chocolate</option>
-                                    <option value="laranja">Laranja / Vermelho</option>
-                                    <option value="creme">Creme</option>
-                                    <option value="branco">Branco</option>
-                                    <option value="wolf_sable">Wolf Sable (Agouti)</option>
-                                </select>
-                            </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="dogSex">Sexo:</label>
+                                            <select id="dogSex" required>
+                                                <option value="">Selecione...</option>
+                                                <option value="M">Macho ♂</option>
+                                                <option value="F">Fêmea ♀</option>
+                                            </select>
+                                        </div>
 
-                            <div class="form-group">
-                                <label for="dogDilution">Diluição:</label>
-                                <select id="dogDilution" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="densa">Densa (Não diluído)</option>
-                                    <option value="diluida">Diluída (Azul / Lilac)</option>
-                                </select>
-                            </div>
+                                        <div class="form-group">
+                                            <label>
+                                                <input type="checkbox" id="dogBelongsToMe" checked>
+                                                Este cão pertence ao meu canil
+                                            </label>
+                                        </div>
+                                    </div>
 
-                            <div class="form-group">
-                                <label for="dogMarking">Marcação:</label>
-                                <select id="dogMarking" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="solido">Sólido</option>
-                                    <option value="sable">Sable</option>
-                                    <option value="tan_points">Tan Points</option>
-                                    <option value="particolor">Particolor (Piebald)</option>
-                                    <option value="irlandesa">Mancha Irlandesa</option>
-                                    <option value="branco_extremo">Branco Extremo</option>
-                                </select>
-                            </div>
+                                    <div class="form-group">
+                                        <label for="dogCoat">Pelagem:</label>
+                                        <select id="dogCoat" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="curta">Curta (Padrão)</option>
+                                            <option value="longa">Longa / Abundante</option>
+                                        </select>
+                                    </div>
+                                </fieldset>
 
-                            <div class="form-group" id="dogMaskGroup" style="display: none;">
-                                <label for="dogMask">Máscara:</label>
-                                <select id="dogMask">
-                                    <option value="">Selecione...</option>
-                                    <option value="sem_mascara">Sem Máscara</option>
-                                    <option value="mascara_negra">Com Máscara Negra</option>
-                                </select>
-                            </div>
+                                <!-- Características Fenotípicas -->
+                                <fieldset>
+                                    <legend>🎨 Características Fenotípicas</legend>
+                                    
+                                    <div class="form-group">
+                                        <label for="dogBaseColor">Coloração Base:</label>
+                                        <select id="dogBaseColor" required onchange="updateDogMaskVisibility(); updateDogIntensityLabel()">
+                                            <option value="">Selecione...</option>
+                                            <option value="preto">Preto</option>
+                                            <option value="chocolate">Chocolate</option>
+                                            <option value="laranja">Laranja / Vermelho</option>
+                                            <option value="creme">Creme</option>
+                                            <option value="branco">Branco</option>
+                                            <option value="wolf_sable">Wolf Sable (Agouti)</option>
+                                        </select>
+                                    </div>
 
-                            <div class="form-group" id="dogIntensityGroup">
-                                <label for="dogIntensity">Intensidade:</label>
-                                <select id="dogIntensity" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="vermelho_intenso">Vermelho Intenso</option>
-                                    <option value="laranja_padrao">Laranja Padrão</option>
-                                    <option value="creme_branco">Creme / Branco</option>
-                                </select>
-                                <div class="field-hint" id="dogIntensityHint" style="display: none;">
-                                    ℹ️ A intensidade está oculta pela cor base, mas informe a cor dos pais ou ancestrais para maior precisão nos portadores.
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="dogDilution">Diluição:</label>
+                                            <select id="dogDilution" required>
+                                                <option value="">Selecione...</option>
+                                                <option value="densa">Densa (Não diluído)</option>
+                                                <option value="diluida">Diluída (Azul / Lilac)</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="dogMarking">Marcação:</label>
+                                            <select id="dogMarking" required>
+                                                <option value="">Selecione...</option>
+                                                <option value="solido">Sólido</option>
+                                                <option value="sable">Sable</option>
+                                                <option value="tan_points">Tan Points</option>
+                                                <option value="particolor">Particolor (Piebald)</option>
+                                                <option value="irlandesa">Mancha Irlandesa</option>
+                                                <option value="branco_extremo">Branco Extremo</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" id="dogMaskGroup" style="display: none;">
+                                        <label for="dogMask">Máscara:</label>
+                                        <select id="dogMask">
+                                            <option value="">Selecione...</option>
+                                            <option value="sem_mascara">Sem Máscara</option>
+                                            <option value="mascara_negra">Com Máscara Negra</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group" id="dogIntensityGroup">
+                                        <label for="dogIntensity">Intensidade:</label>
+                                        <select id="dogIntensity" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="vermelho_intenso">Vermelho Intenso</option>
+                                            <option value="laranja_padrao">Laranja Padrão</option>
+                                            <option value="creme_branco">Creme / Branco</option>
+                                        </select>
+                                        <div class="field-hint" id="dogIntensityHint" style="display: none;">
+                                            ℹ️ A intensidade está oculta pela cor base.
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="dogMerle">Marmoreio:</label>
+                                            <select id="dogMerle" required>
+                                                <option value="">Selecione...</option>
+                                                <option value="nao">Sem Merle (Sólido)</option>
+                                                <option value="merle">Merle Padrão</option>
+                                                <option value="harlequin">Harlequin Merle</option>
+                                                <option value="oculto">Merle Oculto / Cripto</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="dogNose">Trufagem:</label>
+                                            <select id="dogNose" required>
+                                                <option value="">Selecione...</option>
+                                                <option value="preta">Preta</option>
+                                                <option value="marrom">Marrom</option>
+                                                <option value="azul">Azul (Cinza)</option>
+                                                <option value="lilas_beaver">Lilás / Beaver</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="dogTicking">Pigmentação:</label>
+                                        <select id="dogTicking" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="sem_pintas">Sem Pintas</option>
+                                            <option value="com_pintas">Com Pintas / Sardas</option>
+                                        </select>
+                                    </div>
+                                </fieldset>
+
+                                <!-- Histórico de Cores -->
+                                <fieldset>
+                                    <legend>🎨 Histórico de Cores Produzidas</legend>
+                                    <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem;">
+                                        Se este cão já produziu filhotes, registre as cores para refinar o genótipo.
+                                    </p>
+                                    
+                                    <div class="form-group">
+                                        <label for="dogProvenColors">Cores de Filhotes Produzidos:</label>
+                                        <select id="dogProvenColors" multiple size="4">
+                                            <option value="preto">Preto</option>
+                                            <option value="chocolate">Chocolate</option>
+                                            <option value="laranja">Laranja</option>
+                                            <option value="creme">Creme</option>
+                                            <option value="branco">Branco</option>
+                                            <option value="merle">Merle</option>
+                                        </select>
+                                        <small>Segure Ctrl/Cmd para selecionar múltiplas opções</small>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                        <!-- Tab: Parents Data -->
+                        <div class="pedigree-tab-content" id="parentsTab">
+                            <h4>Registrar ou Selecionar Pais</h4>
+                            
+                            <div class="two-column">
+                                <!-- Father -->
+                                <div class="parent-section">
+                                    <h5>🔵 Pai</h5>
+                                    
+                                    <div class="parent-selection">
+                                        <label>O pai já está cadastrado?</label>
+                                        <div class="radio-group">
+                                            <label>
+                                                <input type="radio" name="fatherSource" value="existing" onchange="toggleFatherMode('existing')" checked>
+                                                Selecionar do canil
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="fatherSource" value="new" onchange="toggleFatherMode('new')">
+                                                Registrar novo
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Existing Father -->
+                                    <div id="existingFatherSection">
+                                        <div class="form-group">
+                                            <label for="dogFatherName">Selecione o Pai:</label>
+                                            <input type="text" id="dogFatherName" placeholder="Digite o nome do pai" autocomplete="off">
+                                            <div id="fatherSuggestions" class="suggestions-list" style="display: none;"></div>
+                                        </div>
+
+                                        <div id="fatherDataContainer" style="display: none; background: rgba(108, 92, 231, 0.05); padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                                            <p><strong>Dados do Pai:</strong> <span id="fatherDataDisplay"></span></p>
+                                        </div>
+                                    </div>
+
+                                    <!-- New Father Form -->
+                                    <div id="newFatherSection" style="display: none;">
+                                        <fieldset>
+                                            <legend>Dados do Novo Pai</legend>
+                                            <div class="form-group">
+                                                <label for="newFatherName">Nome:</label>
+                                                <input type="text" id="newFatherName" placeholder="Nome do pai">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="newFatherColor">Cor Base:</label>
+                                                <select id="newFatherColor">
+                                                    <option value="">Selecione...</option>
+                                                    <option value="preto">Preto</option>
+                                                    <option value="chocolate">Chocolate</option>
+                                                    <option value="laranja">Laranja</option>
+                                                    <option value="creme">Creme</option>
+                                                    <option value="branco">Branco</option>
+                                                    <option value="wolf_sable">Wolf Sable</option>
+                                                </select>
+                                            </div>
+                                            <button type="button" class="btn-secondary" onclick="createNewParent('father')">Criar Pai</button>
+                                        </fieldset>
+                                    </div>
+                                </div>
+
+                                <!-- Mother -->
+                                <div class="parent-section">
+                                    <h5>🔴 Mãe</h5>
+                                    
+                                    <div class="parent-selection">
+                                        <label>A mãe já está cadastrada?</label>
+                                        <div class="radio-group">
+                                            <label>
+                                                <input type="radio" name="motherSource" value="existing" onchange="toggleMotherMode('existing')" checked>
+                                                Selecionar do canil
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="motherSource" value="new" onchange="toggleMotherMode('new')">
+                                                Registrar novo
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Existing Mother -->
+                                    <div id="existingMotherSection">
+                                        <div class="form-group">
+                                            <label for="dogMotherName">Selecione a Mãe:</label>
+                                            <input type="text" id="dogMotherName" placeholder="Digite o nome da mãe" autocomplete="off">
+                                            <div id="motherSuggestions" class="suggestions-list" style="display: none;"></div>
+                                        </div>
+
+                                        <div id="motherDataContainer" style="display: none; background: rgba(108, 92, 231, 0.05); padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                                            <p><strong>Dados da Mãe:</strong> <span id="motherDataDisplay"></span></p>
+                                        </div>
+                                    </div>
+
+                                    <!-- New Mother Form -->
+                                    <div id="newMotherSection" style="display: none;">
+                                        <fieldset>
+                                            <legend>Dados da Nova Mãe</legend>
+                                            <div class="form-group">
+                                                <label for="newMotherName">Nome:</label>
+                                                <input type="text" id="newMotherName" placeholder="Nome da mãe">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="newMotherColor">Cor Base:</label>
+                                                <select id="newMotherColor">
+                                                    <option value="">Selecione...</option>
+                                                    <option value="preto">Preto</option>
+                                                    <option value="chocolate">Chocolate</option>
+                                                    <option value="laranja">Laranja</option>
+                                                    <option value="creme">Creme</option>
+                                                    <option value="branco">Branco</option>
+                                                    <option value="wolf_sable">Wolf Sable</option>
+                                                </select>
+                                            </div>
+                                            <button type="button" class="btn-secondary" onclick="createNewParent('mother')">Criar Mãe</button>
+                                        </fieldset>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="dogMerle">Marmoreio:</label>
-                                <select id="dogMerle" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="nao">Sem Merle (Sólido)</option>
-                                    <option value="merle">Merle Padrão</option>
-                                    <option value="harlequin">Harlequin Merle</option>
-                                    <option value="oculto">Merle Oculto / Cripto</option>
-                                </select>
+                        <!-- Tab: Grandparents Data -->
+                        <div class="pedigree-tab-content" id="grandparentsTab">
+                            <h4>Avós do Filhote</h4>
+                            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                                Complete a árvore genealógica registrando os avós paternos e maternos.
+                            </p>
+
+                            <div class="grandparents-grid">
+                                <!-- Paternal Grandfather -->
+                                <div class="grandparent-section">
+                                    <h5>👴 Avô Paterno</h5>
+                                    <input type="text" id="grandparentPGF" placeholder="Nome" class="quick-input">
+                                    <select id="grandparentPGFColor" class="quick-select">
+                                        <option value="">Cor...</option>
+                                        <option value="preto">Preto</option>
+                                        <option value="chocolate">Chocolate</option>
+                                        <option value="laranja">Laranja</option>
+                                        <option value="creme">Creme</option>
+                                    </select>
+                                </div>
+
+                                <!-- Paternal Grandmother -->
+                                <div class="grandparent-section">
+                                    <h5>👵 Avó Paterna</h5>
+                                    <input type="text" id="grandparentPGM" placeholder="Nome" class="quick-input">
+                                    <select id="grandparentPGMColor" class="quick-select">
+                                        <option value="">Cor...</option>
+                                        <option value="preto">Preto</option>
+                                        <option value="chocolate">Chocolate</option>
+                                        <option value="laranja">Laranja</option>
+                                        <option value="creme">Creme</option>
+                                    </select>
+                                </div>
+
+                                <!-- Maternal Grandfather -->
+                                <div class="grandparent-section">
+                                    <h5>👴 Avô Materno</h5>
+                                    <input type="text" id="grandparentMGF" placeholder="Nome" class="quick-input">
+                                    <select id="grandparentMGFColor" class="quick-select">
+                                        <option value="">Cor...</option>
+                                        <option value="preto">Preto</option>
+                                        <option value="chocolate">Chocolate</option>
+                                        <option value="laranja">Laranja</option>
+                                        <option value="creme">Creme</option>
+                                    </select>
+                                </div>
+
+                                <!-- Maternal Grandmother -->
+                                <div class="grandparent-section">
+                                    <h5>👵 Avó Materna</h5>
+                                    <input type="text" id="grandparentMGM" placeholder="Nome" class="quick-input">
+                                    <select id="grandparentMGMColor" class="quick-select">
+                                        <option value="">Cor...</option>
+                                        <option value="preto">Preto</option>
+                                        <option value="chocolate">Chocolate</option>
+                                        <option value="laranja">Laranja</option>
+                                        <option value="creme">Creme</option>
+                                    </select>
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="dogNose">Trufagem:</label>
-                                <select id="dogNose" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="preta">Preta</option>
-                                    <option value="marrom">Marrom</option>
-                                    <option value="azul">Azul (Cinza)</option>
-                                    <option value="lilas_beaver">Lilás / Beaver</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="dogTicking">Pigmentação:</label>
-                                <select id="dogTicking" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="sem_pintas">Sem Pintas</option>
-                                    <option value="com_pintas">Com Pintas / Sardas</option>
-                                </select>
-                            </div>
-
-                            <hr style="margin: 1.5rem 0; border: none; border-top: 2px solid var(--border-color);">
-
-                            <h4 style="margin-bottom: 1rem; color: var(--primary-color);">👨‍👩‍👧 Árvore Genealógica (Opcional)</h4>
-
-                            <div class="form-group">
-                                <label for="dogFather">Pai do Cão:</label>
-                                <select id="dogFather">
-                                    <option value="">Selecione um cão registrado...</option>
-                                </select>
-                                <small style="color: var(--text-light); margin-top: 0.3rem; display: block;">Apenas machos registrados aparecerão aqui</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="dogMother">Mãe do Cão:</label>
-                                <select id="dogMother">
-                                    <option value="">Selecione uma cão registrada...</option>
-                                </select>
-                                <small style="color: var(--text-light); margin-top: 0.3rem; display: block;">Apenas fêmeas registradas aparecerão aqui</small>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="submit" class="btn-primary">✓ Registrar Cão</button>
-                                <button type="button" class="btn-reset" onclick="toggleRegisterDog()">✕ Cancelar</button>
-                            </div>
-                        </form>
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="button" class="btn-primary" onclick="saveDogWithPedigree()">✓ Salvar Cão e Árvore</button>
+                            <button type="button" class="btn-reset" onclick="toggleRegisterDog()">✕ Cancelar</button>
+                        </div>
                     </div>
 
-                    <!-- Kennel Dogs List -->
+                    <!-- Kennel List -->
                     <div id="kennelList" class="kennel-list">
-                        <p class="placeholder">Nenhum cão registrado ainda. Clique em "Registrar Novo Cão" para começar!</p>
+                        <p class="placeholder">Nenhum cão registrado. Clique em "Registrar Novo Cão" para começar!</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Tab 1: Dogs Simulation -->
-            <section id="dogs" class="tab-content">
-                <div class="simulation-setup">
-                    <h2>🧬 Simular Cruzamento</h2>
+            <!-- Tab 2: Simulador -->
+            <section id="simulator" class="tab-content" style="display: none;">
+                <div class="simulator-container">
+                    <h2>🧬 Simulador de Cruzamento</h2>
                     
                     <div class="two-column">
                         <!-- Father Selection -->
@@ -244,9 +468,8 @@
                         <div class="info-box">
                             <h3>⚠️ Informações Importantes</h3>
                             <ul>
-                                <li>Este simulador usa modelos genéticos conhecidos para a raça Spitz Alemão Anão</li>
-                                <li>A árvore genealógica é analisada para detectar genes recessivos escondidos</li>
-                                <li>Resultados são estimativas baseadas em herança mendeliana</li>
+                                <li>Simulações baseadas em herança mendeliana</li>
+                                <li>Genótipos calculados com base em pedigree e histórico de cores</li>
                                 <li>Consulte um geneticista canino para cruzamentos críticos</li>
                             </ul>
                         </div>
@@ -256,58 +479,56 @@
                 </div>
             </section>
 
-            <!-- Tab 2: Results -->
-            <section id="results" class="tab-content">
-                <div id="resultsContainer" class="results-container">
-                    <p class="placeholder">Resultados aparecerão aqui após a simulação</p>
+            <!-- Tab 3: Banco de Linhagem -->
+            <section id="database" class="tab-content" style="display: none;">
+                <div class="database-container">
+                    <h2>📚 Banco de Linhagem</h2>
+                    <p style="color: var(--text-light); margin-bottom: 2rem;">
+                        Cães externos (pais/avós) registrados para compor pedigrees. Estes cães não aparecem na simulação.
+                    </p>
+                    <div id="databaseList" class="dogs-list">
+                        <p class="placeholder">Nenhum cão externo registrado.</p>
+                    </div>
                 </div>
             </section>
 
-            <!-- Tab 3: Reference -->
-            <section id="reference" class="tab-content">
+            <!-- Tab 4: Referência -->
+            <section id="reference" class="tab-content" style="display: none;">
                 <div class="reference-container">
                     <h2>📚 Guia de Referência Genética</h2>
                     
                     <div class="reference-section">
                         <h3>Como Funciona a Herança de Genes Recessivos</h3>
-                        <p><strong>A Regra dos 50%:</strong> O cão herda exatamente uma carta (alelo) de cada pai.</p>
+                        <p><strong>A Regra dos 50%:</strong> O cão herda exatamente um alelo de cada pai.</p>
                         <ul>
-                            <li><strong>Pais:</strong> 50% de chance de passar um gene específico</li>
-                            <li><strong>Avós:</strong> 25% de chance de um gene chegar ao neto</li>
+                            <li><strong>Pais:</strong> 50% de chance de passar um gene</li>
+                            <li><strong>Avós:</strong> 25% de chance</li>
                             <li><strong>Bisavós:</strong> 12,5% de chance</li>
                         </ul>
-                        <p style="margin-top: 1rem; padding: 1rem; background: rgba(108, 92, 231, 0.1); border-radius: 6px;">
-                            <strong>Exemplo:</strong> Um cão preto pode ser portador de chocolate (Bb) se um avó dele era chocolate. Visualmente parece preto puro, mas carrega o gene recessivo no DNA.
-                        </p>
                     </div>
 
                     <div class="reference-section">
                         <h3>Genes Recessivos que Viajam Escondidos</h3>
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr style="background: var(--bg-color);">
-                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">Característica</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">Gene</th>
                                 <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">Se na Árvore...</th>
-                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">O Neto Pode Ser...</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">O Filhote Pode Ser...</th>
                             </tr>
                             <tr>
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Chocolate</td>
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Pai/Mãe/Avó Chocolate</td>
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador de Chocolate (Bb)</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Chocolate (b)</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Pai/Mãe Chocolate</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador (B/b)</td>
                             </tr>
                             <tr style="background: rgba(108, 92, 231, 0.02);">
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Diluição (Azul)</td>
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Ancestral Azul/Beaver</td>
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador de Diluição (Dd)</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Diluição (d)</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Ancestral Azul/Lilac</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador (D/d)</td>
                             </tr>
                             <tr>
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Creme/Branco</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Creme (e)</td>
                                 <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Ancestral Branco/Creme</td>
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador de Creme (Ee)</td>
-                            </tr>
-                            <tr style="background: rgba(108, 92, 231, 0.02);">
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Particolor</td>
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Ancestral Manchado</td>
-                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador de Particolor (Ssp)</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Portador (E/e)</td>
                             </tr>
                         </table>
                     </div>
@@ -318,7 +539,7 @@
                             <li><strong>Ay:</strong> Sable (Dominante)</li>
                             <li><strong>Aw:</strong> Wolf Sable</li>
                             <li><strong>at:</strong> Tan Points</li>
-                            <li><strong>a:</strong> Preto Recessivo (Mais Recessivo)</li>
+                            <li><strong>a:</strong> Preto Recessivo</li>
                         </ul>
                     </div>
 
@@ -396,17 +617,36 @@
                     <div class="reference-section alert-box">
                         <h3>⚠️ Alertas de Saúde Genética</h3>
                         <p><strong>Double Merle (M/M ou Mh/Mh ou similar):</strong> Cegueira, sordez, microftalmia</p>
-                        <p><strong>Alopecia por Diluição (d/d):</strong> Queda de pelo crônica</p>
+                        <p><strong>Alopecia por Diluição (d/d):</strong> Queda de pelo crônica, displasia folicular</p>
                     </div>
+                </div>
+            </section>
+
+            <!-- Tab 5: Results (Hidden by default) -->
+            <section id="results" class="tab-content" style="display: none;">
+                <div id="resultsContainer" class="results-container">
+                    <p class="placeholder">Resultados aparecerão aqui após a simulação</p>
                 </div>
             </section>
         </main>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>Spitz Genetic Predictor v1.0 | Ferramenta educacional para criadores</p>
+            <p>Spitz Lineage Manager v2.0 | Gerenciador Profissional de Linhagem</p>
             <p id="offlineStatus"></p>
         </footer>
+    </div>
+
+    <!-- Pedigree Tree Modal -->
+    <div id="treeModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeTreeModal()">&times;</span>
+            <h2>👨‍👩‍👧‍👦 Árvore Genealógica Completa</h2>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                Clique em ↗️ para expandir a linhagem de cada ancestral. Use Ctrl + Scroll para fazer zoom.
+            </p>
+            <div id="treeVisualization" style="position: relative; overflow-x: auto; background: var(--bg-color); border-radius: 8px; padding: 1rem;"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>
