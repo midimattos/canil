@@ -228,6 +228,125 @@ html, body {
     color: white;
 }
 
+.btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.btn-secondary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* ========== ATALHOS DE COR (NOVO v2.2) ========== */
+.color-shortcuts {
+    background: linear-gradient(135deg, rgba(0, 184, 148, 0.1) 0%, rgba(108, 92, 231, 0.1) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.color-shortcuts label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--primary-color);
+}
+
+.shortcut-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-shortcut {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #00A377 100%);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-shortcut:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow);
+}
+
+.btn-shortcut:active {
+    transform: scale(0.98);
+}
+
+/* ========== CHIPS DE CORES (NOVO v2.2 - Mobile Friendly) ========== */
+.proven-colors-chips {
+    padding: 1rem;
+    background: var(--bg-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.chips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.chip-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.chip-label:hover {
+    border-color: var(--primary-color);
+    background: rgba(108, 92, 231, 0.05);
+}
+
+.chip-input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+    margin: 0;
+}
+
+.chip-input:checked + .chip-text {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.chip-label:has(.chip-input:checked) {
+    background: rgba(108, 92, 231, 0.15);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+.chip-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
 /* ========== KENNEL MANAGEMENT ========== */
 .kennel-container {
     max-width: 1200px;
@@ -450,6 +569,21 @@ legend {
     color: var(--secondary-color);
 }
 
+.dog-carrier-status {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 3px solid #FFC107;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.dog-carrier-status strong {
+    color: #FFC107;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
 .dog-genotype-display {
     background: var(--bg-color);
     border-left: 3px solid var(--text-light);
@@ -603,6 +737,29 @@ legend {
     line-height: 1.4;
 }
 
+/* ========== MARKING DESCRIPTION (NOVO v2.2) ========== */
+.marking-description {
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 184, 148, 0.05) 100%);
+    border-left: 3px solid var(--primary-color);
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    line-height: 1.4;
+    animation: slideInDown 0.3s ease;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ========== RESULTS CONTAINER ========== */
 .results-container {
     max-width: 1000px;
@@ -732,6 +889,12 @@ legend {
     color: var(--primary-color);
     font-weight: 500;
     text-align: right;
+}
+
+.phenotype-item.tricolor {
+    background: linear-gradient(90deg, rgba(255, 0, 0, 0.1), rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.2));
+    border-left: 4px solid #FF6B6B;
+    font-weight: 600;
 }
 
 .puppy-genotype {
@@ -1096,6 +1259,10 @@ legend {
         min-width: 160px;
         width: 180px;
     }
+
+    .chips-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
 }
 
 @media (max-width: 768px) {
@@ -1193,6 +1360,18 @@ legend {
     .summary-grid {
         grid-template-columns: 1fr;
     }
+
+    .chips-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .shortcut-buttons {
+        flex-direction: column;
+    }
+
+    .btn-shortcut {
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1289,6 +1468,26 @@ legend {
 
     .summary-grid {
         grid-template-columns: 1fr;
+    }
+
+    .chips-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chip-label {
+        width: 100%;
+    }
+
+    .shortcut-buttons {
+        flex-direction: column;
+    }
+
+    .btn-shortcut {
+        width: 100%;
+    }
+
+    .color-shortcuts {
+        padding: 0.75rem;
     }
 }
 
@@ -1430,272 +1629,56 @@ legend {
     font-size: 1rem;
 }
 
-/* ========== SECONDARY BUTTON ========== */
-.btn-secondary {
-    background: var(--secondary-color);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-    width: 100%;
-}
-
-.btn-secondary:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-}
-
-/* ========== PEDIGREE TREE VISUALIZATION ========== */
-.pedigree-tree-container {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: auto;
-    padding: 2rem 1rem;
-    background: linear-gradient(135deg, rgba(108, 92, 231, 0.02) 0%, rgba(0, 184, 148, 0.02) 100%);
-    border-radius: 8px;
-    min-height: 600px;
-    max-height: 80vh;
-    transform-origin: top center;
-    transition: transform 0.2s ease;
-    position: relative;
-}
-
-.tree-root {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 3rem;
-    position: relative;
-    z-index: 50;
-}
-
-.tree-lines {
-    position: relative;
-    width: 100%;
-    min-height: 800px;
-    min-width: 1200px;
-    display: block;
-}
-
-/* Node Styling */
-.tree-node {
-    position: absolute;
-    background: var(--card-bg);
-    border: 2px solid var(--primary-color);
-    border-radius: 8px;
-    padding: 1rem;
-    min-width: 160px;
-    width: 180px;
-    text-align: center;
-    font-size: 0.85rem;
-    line-height: 1.4;
-    color: var(--text-color);
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    left: var(--x);
-    top: var(--y);
-    z-index: 10;
-}
-
-.tree-node:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--secondary-color);
-    z-index: 20;
-}
-
-.tree-node.current-dog {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    color: white;
-    border-color: var(--primary-dark);
-    font-weight: 700;
-    min-width: 200px;
-    width: 220px;
-    position: absolute;
-    left: 50%;
-    top: 0;
-    transform: translateX(-50%);
-    z-index: 100;
-    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.3);
-}
-
-.tree-node.current-dog:hover {
-    transform: translateX(-50%) scale(1.05);
-}
-
-.tree-node.father-node {
-    border-color: #3498db;
-    background: linear-gradient(135deg, rgba(52, 152, 219, 0.05) 0%, rgba(52, 152, 219, 0.02) 100%);
-}
-
-.tree-node.mother-node {
-    border-color: #e74c3c;
-    background: linear-gradient(135deg, rgba(231, 76, 60, 0.05) 0%, rgba(231, 76, 60, 0.02) 100%);
-}
-
-.node-content {
-    flex: 1;
-    width: 100%;
-}
-
-.node-content strong {
-    display: block;
-    font-weight: 700;
-    margin-bottom: 0.3rem;
-    word-break: break-word;
-}
-
-.node-content small {
-    display: block;
-    font-size: 0.75rem;
-}
-
-/* Expand Button */
-.btn-expand {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: all 0.2s ease;
-    width: 100%;
-}
-
-.btn-expand:hover {
-    background: var(--primary-dark);
-    transform: scale(1.05);
-}
-
-/* Tree Line Connector - SVG Style */
-.tree-line-connector {
-    position: absolute;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    height: 2px;
-    left: var(--from-x);
-    top: var(--from-y);
-    width: calc(abs(var(--to-x) - var(--from-x)) + 20px);
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* ========== SCROLL BEHAVIOR ========== */
-.pedigree-tree-container {
-    scroll-behavior: smooth;
-}
-
-.pedigree-tree-container::-webkit-scrollbar {
-    height: 10px;
-    width: 10px;
-}
-
-.pedigree-tree-container::-webkit-scrollbar-track {
-    background: var(--bg-color);
-    border-radius: 4px;
-}
-
-.pedigree-tree-container::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 4px;
-}
-
-.pedigree-tree-container::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-dark);
-}
-
-.pedigree-tree-container::-webkit-scrollbar-corner {
-    background: var(--bg-color);
-}
-
-/* ========== RESPONSIVE TREE ========== */
-@media (max-width: 1200px) {
-    .tree-lines {
-        min-width: 900px;
-    }
-
-    .tree-node {
-        min-width: 140px;
-        width: 160px;
-        padding: 0.75rem;
-        font-size: 0.8rem;
-    }
-
-    .tree-node.current-dog {
-        min-width: 160px;
-        width: 180px;
-    }
-}
-
+/* ========== RESPONSIVE PEDIGREE BUILDER ========== */
 @media (max-width: 768px) {
-    .pedigree-tree-container {
-        min-height: 500px;
-        max-height: 70vh;
+    .pedigree-tabs {
+        gap: 0.25rem;
+    }
+
+    .pedigree-tab-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .grandparents-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .parent-section {
         padding: 1rem;
-    }
-
-    .tree-lines {
-        min-width: 700px;
-    }
-
-    .tree-node {
-        min-width: 130px;
-        width: 150px;
-        padding: 0.6rem;
-        font-size: 0.75rem;
-    }
-
-    .tree-node.current-dog {
-        min-width: 140px;
-        width: 160px;
-    }
-
-    .btn-expand {
-        padding: 0.2rem 0.4rem;
-        font-size: 0.7rem;
     }
 }
 
 @media (max-width: 480px) {
-    .pedigree-tree-container {
-        min-height: 400px;
-        max-height: 60vh;
-        padding: 0.75rem;
+    .pedigree-tabs {
+        flex-direction: column;
     }
 
-    .tree-lines {
-        min-width: 500px;
+    .pedigree-tab-btn {
+        width: 100%;
+        text-align: left;
+        bottom: 0;
+        border-bottom: none;
+        border-left: 3px solid transparent;
+        margin-left: -1rem;
+        padding-left: 1.5rem;
     }
 
-    .tree-node {
-        min-width: 110px;
-        width: 130px;
-        padding: 0.5rem;
-        font-size: 0.7rem;
+    .pedigree-tab-btn.active {
+        border-bottom: none;
+        border-left-color: var(--primary-color);
     }
 
-    .tree-node.current-dog {
-        min-width: 120px;
-        width: 140px;
+    .grandparents-grid {
+        grid-template-columns: 1fr;
     }
 
-    .tree-node:hover {
-        transform: scale(1.02);
-    }
-
-    .tree-node.current-dog:hover {
-        transform: translateX(-50%) scale(1.02);
-    }
-
-    .btn-expand {
-        padding: 0.15rem 0.3rem;
-        font-size: 0.65rem;
+    .parent-section,
+    .grandparent-section {
+        padding: 1rem;
     }
 }

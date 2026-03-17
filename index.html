@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6C5CE7">
     <meta name="description" content="Gerenciador de Linhagem de Spitz Alemão Anão">
-    <title>Spitz Lineage Manager</title>
+    <title>Spitz Lineage Manager v2.2</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%236C5CE7' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-weight='bold'>🐕</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%236C5CE7' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-weight='bold'>🐕</text></svg>">
@@ -15,7 +15,7 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1 class="title">🐕 Spitz Lineage Manager</h1>
+            <h1 class="title">🐕 Spitz Lineage Manager v2.2</h1>
             <p class="subtitle">Gerenciador Inteligente de Linhagem para Spitz Alemão Anão</p>
         </header>
 
@@ -113,6 +113,16 @@
                                         </select>
                                     </div>
 
+                                    <!-- Atalhos de Cor -->
+                                    <div class="color-shortcuts">
+                                        <label>Atalhos Rápidos:</label>
+                                        <div class="shortcut-buttons">
+                                            <button type="button" class="btn-shortcut" onclick="applyColorShortcut('beaver')">Beaver</button>
+                                            <button type="button" class="btn-shortcut" onclick="applyColorShortcut('chocolate_tan')">Chocolate Tan</button>
+                                            <button type="button" class="btn-shortcut" onclick="applyColorShortcut('merle_blue')">Blue Merle</button>
+                                        </div>
+                                    </div>
+
                                     <div class="form-row">
                                         <div class="form-group">
                                             <label for="dogDilution">Diluição:</label>
@@ -125,15 +135,17 @@
 
                                         <div class="form-group">
                                             <label for="dogMarking">Marcação:</label>
-                                            <select id="dogMarking" required>
+                                            <select id="dogMarking" required onchange="updateMarkingDescription()">
                                                 <option value="">Selecione...</option>
                                                 <option value="solido">Sólido</option>
                                                 <option value="sable">Sable</option>
-                                                <option value="tan_points">Tan Points</option>
-                                                <option value="particolor">Particolor (Piebald)</option>
-                                                <option value="irlandesa">Mancha Irlandesa</option>
+                                                <option value="tan_points">Tan Points (Fogo)</option>
+                                                <option value="particolor">Particolor (Piebald/Manchas Brancas)</option>
+                                                <option value="tricolor">Tricolor (Tan Points + Particolor)</option>
+                                                <option value="irish_setter">Mancha Irlandesa</option>
                                                 <option value="branco_extremo">Branco Extremo</option>
                                             </select>
+                                            <div id="markingDescription" class="marking-description" style="display: none;"></div>
                                         </div>
                                     </div>
 
@@ -193,24 +205,15 @@
                                     </div>
                                 </fieldset>
 
-                                <!-- Histórico de Cores -->
+                                <!-- Histórico de Cores - NOVO: Checkboxes em vez de Select -->
                                 <fieldset>
-                                    <legend>🎨 Histórico de Cores Produzidas</legend>
+                                    <legend>Histórico de Cores Produzidas (PRIORIDADE MÁXIMA)</legend>
                                     <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem;">
-                                        Se este cão já produziu filhotes, registre as cores para refinar o genótipo.
+                                        ⭐ Se este cão já produziu filhotes, selecione as cores abaixo. O sistema usará essas informações para refinar o genótipo (tem PRIORIDADE sobre o pedigree).
                                     </p>
                                     
-                                    <div class="form-group">
-                                        <label for="dogProvenColors">Cores de Filhotes Produzidos:</label>
-                                        <select id="dogProvenColors" multiple size="4">
-                                            <option value="preto">Preto</option>
-                                            <option value="chocolate">Chocolate</option>
-                                            <option value="laranja">Laranja</option>
-                                            <option value="creme">Creme</option>
-                                            <option value="branco">Branco</option>
-                                            <option value="merle">Merle</option>
-                                        </select>
-                                        <small>Segure Ctrl/Cmd para selecionar múltiplas opções</small>
+                                    <div class="proven-colors-chips" id="provenColorsChips">
+                                        <!-- Chips serão gerados via JavaScript -->
                                     </div>
                                 </fieldset>
                             </form>
@@ -508,6 +511,34 @@
                     </div>
 
                     <div class="reference-section">
+                        <h3>🌟 TRICOLOR: Loci Independentes</h3>
+                        <p>
+                            <strong>Tricolor combina dois padrões independentes:</strong>
+                        </p>
+                        <ul>
+                            <li><strong>Locus A (Tan Points):</strong> Marcações de "fogo" (sobrancelhas, bochechas, patas) - genótipo at/at</li>
+                            <li><strong>Locus S (Particolor):</strong> Manchas brancas sobre cor base - genótipo sp/sp</li>
+                            <li><strong>Resultado Visual:</strong> Um cão com ambas as características é visualmente Tricolor</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-section">
+                        <h3>🌟 PRIORIDADE: Histórico de Cores</h3>
+                        <p>
+                            <strong>Se um cão já produziu filhotes de uma cor específica, o sistema força o genótipo correspondente, superando o pedigree!</strong>
+                        </p>
+                        <ul>
+                            <li>✓ Produziu Chocolate → Genótipo: B/b</li>
+                            <li>✓ Produziu Beaver → Genótipo: B/b, D/d</li>
+                            <li>✓ Produziu Creme/Branco → Genótipo: E/e</li>
+                            <li>✓ Produziu Merle → Genótipo: M/m</li>
+                            <li>✓ Produziu Tan Points → Genótipo Locus A: at/at</li>
+                            <li>✓ Produziu Particolor → Genótipo Locus S: sp/sp</li>
+                            <li>✓ Produziu Tricolor → Genótipo Locus A: at/at + Locus S: sp/sp</li>
+                        </ul>
+                    </div>
+
+                    <div class="reference-section">
                         <h3>Genes Recessivos que Viajam Escondidos</h3>
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr style="background: var(--bg-color);">
@@ -538,7 +569,7 @@
                         <ul>
                             <li><strong>Ay:</strong> Sable (Dominante)</li>
                             <li><strong>Aw:</strong> Wolf Sable</li>
-                            <li><strong>at:</strong> Tan Points</li>
+                            <li><strong>at:</strong> Tan Points (Fogo)</li>
                             <li><strong>a:</strong> Preto Recessivo</li>
                         </ul>
                     </div>
@@ -600,8 +631,8 @@
                         <h3>Locus S - Spotting (Marcação)</h3>
                         <ul>
                             <li><strong>S:</strong> Sólido (Dominante)</li>
-                            <li><strong>si:</strong> Irlandês</li>
-                            <li><strong>sp:</strong> Piebald/Parti</li>
+                            <li><strong>si:</strong> Irlandês (Mancha Irlandesa)</li>
+                            <li><strong>sp:</strong> Piebald/Particolor (Manchas Brancas)</li>
                             <li><strong>sw:</strong> Branco Extremo (Recessivo)</li>
                         </ul>
                     </div>
@@ -632,7 +663,7 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <p>Spitz Lineage Manager v2.0 | Gerenciador Profissional de Linhagem</p>
+            <p>Spitz Lineage Manager v2.2 | Gerenciador Profissional de Linhagem</p>
             <p id="offlineStatus"></p>
         </footer>
     </div>
